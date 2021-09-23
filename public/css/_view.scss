@@ -1,0 +1,18 @@
+.view {
+	position: absolute;
+	top: 100vh;
+	left: 50vw;
+	transform: translateX(-50%);
+	background: $dark;
+	width: 100vw;
+	height: 100vh;
+	max-width: 350px;
+	padding: 2rem;
+	transition: all 0.3s ease-in-out;
+	z-index: 50;
+
+	&.active {
+		top: 0 !important;
+		z-index: 51;
+	}
+}

@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
 	  "start" : "node .",
-	  "dev" : "nodemon ."
+	  "dev" : "nodemon . & npm run watch:css",
+	  "build:css" : "node-sass public/css/mdos.scss public/css/mdos.css",
+	  "watch:css" : "node-sass public/css/mdos.scss -wo public/css/"
   },
   "repository": {
     "type": "git",
