@@ -1,0 +1,26 @@
+{
+  "name": "mdos-web",
+  "version": "0.0.1",
+  "description": "The frontend of MDoS exposed to the world - includes user, rights and access management",
+  "main": "main.js",
+  "scripts": {
+	  "start" : "node .",
+	  "dev" : "nodemon ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com:maschinendeck/mdos-web.git"
+  },
+  "author": "Michael Ochmann <miko@maschinendeck.org>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "node-sass": "^6.0.1",
+    "nodemon": "^2.0.12"
+  }
+}
