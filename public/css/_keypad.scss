@@ -7,27 +7,17 @@
 
 	button {
 		border-radius: 500px;
-		font-size: 2.5rem;
+		font-size: 2.2rem;
 		padding: 0;
 		margin: 0;
-		aspect-ratio: 1 / 1;
+		width: 63px;
+		height: 63px;
 
 		&:nth-of-type(10) {
 			background: $orange;
 		}
 		&:nth-of-type(12) {
 			background: $green;
-		}
-
-		// ugly fix for safari
-		@supports not (aspect-ratio: 1 / 1) {
-			vertical-align:  middle;
-
-			&::before {
-			  float: left;
-			  padding-top: 100%;
-			  content: "";
-			}
 		}
 	}
 }

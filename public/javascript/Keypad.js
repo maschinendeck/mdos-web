@@ -47,8 +47,10 @@ class Keypad {
 
 	// add char to display by setting the value of the input field
 	addToDisplay(char) {
-		console.log(char);
-		this.display.attr("value", (this.display.attr("value") || "") + char.toString());
+		const currentValue = this.display.attr("value") || "";
+		if (currentValue.length >= 4)
+			return;
+		this.display.attr("value", currentValue + char.toString());
 	}
 
 	send() {
