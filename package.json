@@ -4,10 +4,11 @@
   "description": "The frontend of MDoS exposed to the world - includes user, rights and access management",
   "main": "main.js",
   "scripts": {
-	  "start" : "node .",
-	  "dev" : "nodemon . & npm run watch:css",
-	  "build:css" : "node-sass public/css/mdos.scss public/css/mdos.css",
-	  "watch:css" : "node-sass public/css/mdos.scss -wo public/css/"
+    "start": "node .",
+    "dev": "nodemon . & npm run watch:css",
+    "build:css": "node-sass public/css/mdos.scss public/css/mdos.css",
+    "watch:css": "node-sass public/css/mdos.scss -wo public/css/",
+    "usermanager": "node bin/usermanager.js"
   },
   "repository": {
     "type": "git",
@@ -17,11 +18,16 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chalk": "^4.1.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "sequelize": "^6.6.5"
+    "express-jwt": "^6.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "sequelize": "^6.6.5",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "inquirer": "^8.1.5",
     "node-sass": "^6.0.1",
     "nodemon": "^2.0.12"
   }

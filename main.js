@@ -1,10 +1,9 @@
-const Express = require("express");
+require("dotenv").config();
 
-const Auth = require("./src/routes/Auth");
+const MDoS = require("./src/MDoS");
 
-const app = Express();
-app.use(Express.static(`${__dirname}/public`));
-app.get("/auth", Auth);
+if (!process.env.hasOwnProperty("SECRET"))
+	Log(`No SECRET supplied in .env file: ${process.env.SECRET}`, LogLevel.PANIC);	
 
-
-app.listen(9000);
+const APP = new MDoS();
+APP.listen();

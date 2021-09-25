@@ -1,18 +1,21 @@
 .keypad {
 	display: grid;
-	margin: 0 2rem;
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-gap: 1rem;
 	margin-bottom: 2rem;
 
 	button {
 		border-radius: 500px;
+		justify-self: center;
 		font-size: 2.2rem;
 		padding: 0;
 		margin: 0;
-		width: 63px;
-		height: 63px;
+		aspect-ratio: 1 / 1;
 
+		@supports not (aspect-ratio: 1 / 1) {
+			height: 63px;
+			width: 63px;
+		}
 		&:nth-of-type(10) {
 			background: $orange;
 		}
