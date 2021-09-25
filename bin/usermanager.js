@@ -4,73 +4,192 @@ const crypto   = require("crypto");
 
 const {Log, LogLevel}            = require("../src/Std");
 const User                       = require("../src/Models/User");
+const { listenerCount } = require("process");
 
-const userAttributes = [
-	"firstname",
-	"lastname",
-	"nickname",
-	"email",
-].map(attribute => {
-	return {
-		type   : "input",
-		name   : attribute,
-	}
-});
-
-inquirer.prompt([
-		...userAttributes,
-		{
-			type    : "password",
-			name    : "password",
-			message : "password (leave empty for generating one automatically)"
-		},
+const mainREPL = async () => {
+	return await inquirer.prompt([
 		{
 			type    : "list",
-			name    : "role",
+			name    : "action",
+			message : "Which action do you like to perform? (CRUD)",
 			choices : [
-				"guest",
-				"member",
-				"admin"
+				"create",
+				"read",
+				"update",
+				"delete",
+				"quit"
 			]
 		}
 	]).then(async answers => {
-	const {firstname, lastname, nickname, email, role, password} = answers;
-	const exists = await User.count({
-		where : {
-			email : {
-				[Op.eq] : email
-			}
+		const {action} = answers;
+		
+		switch (action) {
+			case "quit":
+				process.exit();
+			case "create":
+				createUser();
+				break;
+			case "delete":
+				deleteUser();
+				break;
+			default:
+				mainREPL();
+				break;
 		}
 	});
-	if (exists > 0) {
-		Log(`User with email '${email}' already exists`, LogLevel.ERROR);
-		process.exit();
-	}
-	const capabilities    = role;
-	const initialPassword = password && password !== "" ? password : User.GeneratePassword();
-	const salt            = User.GenerateSalt();
-	const newUser         = User.build({
-		firstname,
-		lastname,
-		email,
-		nickname,
-		salt     : salt,
-		password : User.HashPassword(initialPassword, salt),
-		role
-	});
+};
+
+const findAndSelectUser = async (question = "Which user should be selected?") => {
+	const {searchString} = await inquirer.prompt([
+		{
+			type : "input",
+			name : "searchString",
+			message : "Search user by firstname, lastname, nick or email:"
+		}
+	]);
 	
-	try {
-		await newUser.validate();
-		newUser.save();
-		Log(`User '${email}' (firstname: ${firstname}, lastname: ${lastname}, role: ${role}) has been created successfully.`, LogLevel.SUCCESS);
-	} catch (exception) {
-		if (!exception.errors) {
-			console.log(exception.message);
-			process.exit();
+	let users = await User.findAll({
+			where : {
+				[Op.or] : {
+					email : {
+						[Op.like] : `%${searchString}%`
+					},
+					nickname : {
+						[Op.like] : `%${searchString}%`
+					},
+					firstname : {
+						[Op.like] : `%${searchString}%`
+					},
+					lastname : {
+						[Op.like] : `%${searchString}%`
+					}
+				}
+			}
+	});
+	users = users.map(user => {
+		return {
+			name  : `[${user.id}] ${user.firstname} ${user.lastname} (${user.email})`,
+			value : user.id
 		}
-		Log("ERROR: could not save user:");
-		for (const error of exception.errors)
-			Log(`\t${error.message}`, LogLevel.ERROR);
+	});
+	const {userId} = await inquirer.prompt([
+		{
+			type    : "list",
+			name    : "userId",
+			message : question,
+			choices : [
+				...users,
+				{
+					name : "back"
+				}
+			]
+		}
+	]);
+
+	return userId;
+}
+
+const deleteUser = async () => {
+	const userId = await findAndSelectUser();
+
+	if (userId === "back") {
+		mainREPL();
+		return;
 	}
 
-}).catch(error => console.log(error));
+	inquirer.prompt([
+		{
+			type    : "confirm",
+			name    : "shure",
+			message : `Do you really want to delete user with id '${userId}'`
+		}
+	]).then(({shure}) => {
+		if (shure) {
+			User.destroy({
+				where : {
+					id : userId
+				}
+			});
+			Log(`User with id '${userId}' has been deleted`, LogLevel.SUCCESS);
+		} else
+			Log("Abort user deletion", LogLevel.WARN);
+		mainREPL();
+	});
+};
+
+const createUser = () => {
+	const userAttributes = [
+		"firstname",
+		"lastname",
+		"nickname",
+		"email",
+	].map(attribute => {
+		return {
+			type   : "input",
+			name   : attribute,
+		}
+	});
+
+	inquirer.prompt([
+			...userAttributes,
+			{
+				type    : "password",
+				name    : "password",
+				message : "password (leave empty for generating one automatically)"
+			},
+			{
+				type    : "list",
+				name    : "role",
+				choices : [
+					"guest",
+					"member",
+					"admin"
+				]
+			}
+		]).then(async answers => {
+		const {firstname, lastname, nickname, email, role, password} = answers;
+		const exists = await User.count({
+			where : {
+				email : {
+					[Op.eq] : email
+				}
+			}
+		});
+		if (exists > 0) {
+			Log(`User with email '${email}' already exists`, LogLevel.ERROR);
+			process.exit();
+		}
+		const capabilities    = role;
+		const initialPassword = password && password !== "" ? password : User.GeneratePassword();
+		const salt            = User.GenerateSalt();
+		const newUser         = User.build({
+			firstname,
+			lastname,
+			email,
+			nickname,
+			salt     : salt,
+			password : User.HashPassword(initialPassword, salt),
+			role
+		});
+		
+		try {
+			await newUser.validate();
+			newUser.save();
+			Log(`User '${email}' (firstname: ${firstname}, lastname: ${lastname}, role: ${role}) has been created successfully.`, LogLevel.SUCCESS);
+		} catch (exception) {
+			if (!exception.errors) {
+				console.log(exception.message);
+				process.exit();
+			}
+			Log("ERROR: could not save user:");
+			for (const error of exception.errors)
+				Log(`\t${error.message}`, LogLevel.ERROR);
+		}
+		mainREPL();
+	}).catch(error =>  {
+		console.log(error);
+		mainREPL();
+	});
+};
+
+mainREPL();
