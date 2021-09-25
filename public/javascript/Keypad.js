@@ -2,8 +2,9 @@ import {$} from "./Q6.js";
 
 class Keypad {
 	constructor() {
-		this.keys = $(".keypad > button");
-		this.display = $("#display");
+		this.keys      = $(".keypad > button");
+		this.display   = $("#display");
+		this.container = $("#view_keypad");
 
 		// touch handlers for keypad
 		this.keys.each(key => {
@@ -24,7 +25,7 @@ class Keypad {
 			const key = parseInt(event.key);
 
 			// handle backspace and delete key
-			if (event.keyCode === 8 || event.keyCode === 48) {
+			if (this.container.hasClass("active") && (event.keyCode === 8 || event.keyCode === 48)) {
 				event.preventDefault();
 				this.clearDisplay();
 
@@ -39,7 +40,7 @@ class Keypad {
 			}
 
 			// handle number keys
-			if (!key || key > 9 || key < 0)
+			if (this.container.hasClass("active") && (!key || key > 9 || key < 0))
 				return;
 			this.addToDisplay(key.toString());
 		});

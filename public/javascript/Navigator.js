@@ -21,7 +21,7 @@ class Navigator {
 			this.changeView(this.views.keypad);
 		});
 
-		this.changeView(this.views.menu);
+		this.changeView(this.views.login);
 	}
 
 	changeView(toView) {

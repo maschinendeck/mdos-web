@@ -93,7 +93,7 @@ class Q6 {
 	}
 
 	hasClass(className) {
-		return className in this._elements.classList;
+		return this._elements[0].classList.contains(className);
 	}
 
 	html(value = null) {
@@ -135,6 +135,12 @@ class Q6 {
 			element.parentNode.insertBefore(newElement, element);
 		});
 
+		return this;
+	}
+
+	removeAttr(attr) {
+		this._each(element => element.removeAttribute(attr));
+		
 		return this;
 	}
 
