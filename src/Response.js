@@ -22,8 +22,12 @@ class Response {
 				code    = 401;
 				message = "Authentication token invalid or missing";
 				break;
+			case "credentials_required":
+				code    = 403;
+				message = "Credentials are required";
+				break;
 			default:
-				coder   = error.code;
+				code    = error.code;
 				message = error.message;
 				break;
 		}

@@ -14,6 +14,11 @@ class AuthenticationError extends Response {
 const Auth = async (request, response) => {
 	const {username, password} = request.body;
 
+	if (!username || !password) {
+		response.json(new AuthenticationError());
+		return;
+	}
+
 	const users = await User.findAll({
 		where : {
 			email : username

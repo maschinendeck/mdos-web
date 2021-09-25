@@ -1,6 +1,7 @@
 const Express    = require("express");
 const BodyParser = require("body-parser");
 const JWT        = require("express-jwt");
+const {Router}   = Express;
 
 const {ErrorMiddleware} = require("./Response");
 const {Log, LogLevel}   = require("./Std");
@@ -11,32 +12,34 @@ const Restart = require("./routes/Restart");
 
 class MDoS {
 	constructor() {
-		this.app = Express();
+		this.app    = Express();
+		this.router = Router();
 
 		this.attachMiddlewares();
 		this.attachRoutes();
 	}
 
 	attachRoutes() {
-		this.app.post("/auth",        Auth);
-		this.app.get("/door/:action", Door);
-		this.app.get("/restart",      Restart);
+		this.router.post("/auth",        Auth);
+		this.router.get("/door/:action", Door);
+		this.router.get("/restart",      Restart);
 	}
 
 	attachMiddlewares() {
+		this.app.use(BodyParser.json());
 		this.app.use(Express.static(`${__dirname}/../public`));
-		this.app.use(JWT({
+		this.app.use("/api", this.router);
+		this.app.use("/api", JWT({
 			secret : process.env.SECRET,
 			algorithms : [
 				"HS256"
 			]
 		}).unless({
 			path : [
-				"/auth"
+				"/api/auth"
 			]
 		}));
 		this.app.use(ErrorMiddleware);
-		this.app.use(BodyParser.json());
 	}
 
 	listen() {
