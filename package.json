@@ -6,8 +6,11 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon . & npm run watch:css",
+	"build" : "npm run build:css",
     "build:css": "node-sass public/css/mdos.scss public/css/mdos.css",
     "watch:css": "node-sass public/css/mdos.scss -wo public/css/",
+	"install" : "npm run build && pm2 start main.js --name mdos && pm2 save",
+	"remove" : "pm2 stop mdos && pm2 delete mdos && pm2 save",
     "usermanager": "node bin/usermanager.js"
   },
   "repository": {
