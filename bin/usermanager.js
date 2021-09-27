@@ -29,6 +29,12 @@ const mainREPL = async () => {
 			case "create":
 				createUser();
 				break;
+			case "read":
+				readUser();
+				break;
+			case "update":
+				updateUser();
+				break;
 			case "delete":
 				deleteUser();
 				break;
@@ -89,6 +95,78 @@ const findAndSelectUser = async (question = "Which user should be selected?") =>
 	return userId;
 }
 
+const readUser = async () => {
+	const userId = await findAndSelectUser();
+
+	if (userId === "back") {
+		mainREPL();
+		return;
+	}
+
+	const result = await User.findAll({
+		where : {
+			id : userId
+		}
+	});
+	const user = result[0];
+
+	console.table(user?.dataValues);
+
+	mainREPL();
+}
+
+const updateUser = async () => {
+	const userId = await findAndSelectUser();
+
+	if (userId === "back") {
+		mainREPL();
+		return;
+	}
+
+	const result = await User.findAll({
+		where : {
+			id : userId
+		}
+	});
+	const user = result[0];
+
+	const options = [];
+
+	for (const [key, value] of Object.entries(user.dataValues)) {
+		if (["createdAt", "updatedAt", "salt", "id"].includes(key))
+			continue;
+
+		if (key === "role") {
+			options.push({
+				...roleList,
+				default : value 
+			});
+			continue;
+		}
+		options.push({
+			type    : key === "password" ? "password" : "input",
+			name    : key,
+			message : key,
+			default : key === "password" ? null : value
+		});
+	}
+
+	inquirer.prompt(options).then(answers => {
+		for (const [key, value] of Object.entries(answers)) {
+			if (key === "password") {
+				if (!value)
+					continue;
+				user.password = User.HashPassword(value, user.salt);				
+				continue;
+			}
+
+			user[key] = value;
+		}
+		user.save();
+		console.log(answers);
+	});
+}
+
 const deleteUser = async () => {
 	const userId = await findAndSelectUser();
 
@@ -137,15 +215,7 @@ const createUser = () => {
 				name    : "password",
 				message : "password (leave empty for generating one automatically)"
 			},
-			{
-				type    : "list",
-				name    : "role",
-				choices : [
-					"guest",
-					"member",
-					"admin"
-				]
-			}
+			roleList
 		]).then(async answers => {
 		const {firstname, lastname, nickname, email, role, password} = answers;
 		const exists = await User.count({
@@ -191,5 +261,15 @@ const createUser = () => {
 		mainREPL();
 	});
 };
+
+const roleList = {
+	type    : "list",
+	name    : "role",
+	choices : [
+		"guest",
+		"member",
+		"admin"
+	]
+}
 
 mainREPL();
