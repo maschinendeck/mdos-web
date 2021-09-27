@@ -5,8 +5,6 @@ import Navigator from "./Navigator.js";
 import Keypad    from "./Keypad.js";
 import Login     from "./Login.js";
 
-import Alert from "./Alert.js";
-
 $(document).ready(() => {
 	const [jwt, setJWT] = useLocalStorage("jwt", null);
 
