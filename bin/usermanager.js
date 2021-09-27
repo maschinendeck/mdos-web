@@ -1,10 +1,8 @@
 const {Op}     = require("sequelize");
 const inquirer = require("inquirer");
-const crypto   = require("crypto");
 
 const {Log, LogLevel}            = require("../src/Std");
 const User                       = require("../src/Models/User");
-const { listenerCount } = require("process");
 
 const mainREPL = async () => {
 	return await inquirer.prompt([

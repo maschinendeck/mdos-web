@@ -3,5 +3,6 @@
 
 node_modules
 *.css
+*.min.js
 .env
 database.sqlite
