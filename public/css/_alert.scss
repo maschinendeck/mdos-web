@@ -1,0 +1,47 @@
+.alert {
+	background: white;
+	color: #222;
+	padding: 1rem;
+	font-size: 0.8rem;
+	box-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+	border-radius: 4px;
+	width: 100%;
+	margin-bottom: 1rem;
+	position: relative;
+
+	&.remove {
+		animation: fadeOutUp 0.4s;
+	}
+
+	&.success {
+		background: lighten($green, 30%);
+		color : darken($green, $amount: 20%);
+	}
+
+	&.error {
+		background: lighten($red, 30%);
+		color : darken($red, $amount: 20%);
+	}
+}
+
+.alert-container {
+	position: fixed;
+	width: 95vw;
+	max-width: 500px;
+	left: 50%;
+	top: 1rem;
+	transform: translateX(-50%);
+	z-index: 300;
+}
+
+@keyframes fadeOutUp {
+	from {
+	  opacity: 1;
+	}
+  
+	to {
+	  opacity: 0;
+	  transform: translate3d(0, -100%, 0);
+	}
+  }
+  

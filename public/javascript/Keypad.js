@@ -1,7 +1,9 @@
-import {$} from "./Q6.js";
-
+import {$}     from "./Q6.js";
+import APICall from "./APICall.js";
+import Alert   from "./Alert.js";
 class Keypad {
-	constructor() {
+	constructor(navigator) {
+		this.navigator = navigator;
 		this.keys      = $(".keypad > button");
 		this.display   = $("#display");
 		this.container = $("#view_keypad");
@@ -20,12 +22,17 @@ class Keypad {
 			})
 		});
 
+		this.clearDisplay();
+
 		// handle keyboard input for when on desktop
 		$(document).on("keydown", (_, event) => {
+			if (!this.container.hasClass("active"))
+				return;
+
 			const key = parseInt(event.key);
 
 			// handle backspace and delete key
-			if (this.container.hasClass("active") && (event.keyCode === 8 || event.keyCode === 48)) {
+			if ((event.keyCode === 8 || event.keyCode === 48)) {
 				event.preventDefault();
 				this.clearDisplay();
 
@@ -40,7 +47,7 @@ class Keypad {
 			}
 
 			// handle number keys
-			if (this.container.hasClass("active") && (!key || key > 9 || key < 0))
+			if (!key || key > 9 || key < 0)
 				return;
 			this.addToDisplay(key.toString());
 		});
@@ -49,16 +56,41 @@ class Keypad {
 	// add char to display by setting the value of the input field
 	addToDisplay(char) {
 		const currentValue = this.display.attr("value") || "";
-		if (currentValue.length >= 4)
+		if (isNaN(char) || currentValue.length >= 4)
 			return;
-		this.display.attr("value", currentValue + char.toString());
+		this.display.attr("value", currentValue.toString() + "" + char.toString());
 	}
 
 	send() {
-		fetch("./auth")
-			.then(response => response.json())
-			.then(json => console.log(json))
-			.catch(error => console.log(error));
+		APICall.post("/door/open", {
+			code : this.display.val()
+		}).then(response => {
+			if (response.code && parseInt(response.code) === 401) {
+				this.navigator.deauthorize();
+
+				return;
+			}
+
+			switch (response.code) {
+				case 200:
+					new Alert(Alert.Type.Success, "Der Code war korrekt. Die Tür wird geöffnet.");
+					this.clearDisplay();
+					break;
+				case 405:
+					new Alert(Alert.Type.ERROR, `Dir fehlt die Berechtigung diese Aktion durchzuführen`);
+					this.clearDisplay();
+					return;
+				case 508:
+					new Alert(Alert.Type.ERROR, "Der angegebene Code war inkorrekt.");
+					this.clearDisplay();
+					return;
+				default:
+					new Alert(Alert.Type.ERROR, `Etwas ist schiefgelaufen [Code ${response.code}]`);
+					this.clearDisplay();
+					return;
+			}
+
+		});
 	}
 
 	// clear the whole display by clearing the value of the input field

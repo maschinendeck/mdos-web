@@ -5,6 +5,7 @@
 @import "view";
 @import "keypad";
 @import "footer";
+@import "alert";
 
 * {
 	box-sizing: border-box;
@@ -30,5 +31,5 @@ body {
 }
 
 main {
-	margin-top: 6rem;
+	margin-top: 5rem;
 }

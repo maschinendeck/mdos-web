@@ -45,9 +45,9 @@
 	</main>
 </section>
 
-<section class="view" id=view_keypad style="">
+<section class="view" id=view_keypad style="z-index: 250;">
 	<header>
-		<input type=text name=pin id=display maxlength="4" pattern="[0-9]{4}" readonly/>
+		<input type=text name=pin id=display maxlength="4" value="" pattern="[0-9]{4}" readonly/>
 	</header>
 	<main style="margin: 0;">
 		<section class=keypad>
@@ -74,6 +74,10 @@
 <footer>
 
 </footer>
+
+<section id=alerts class=alert-container>
+
+</section>
 
 </body>
 </html>

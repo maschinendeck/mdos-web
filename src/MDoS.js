@@ -20,15 +20,15 @@ class MDoS {
 	}
 
 	attachRoutes() {
-		this.router.post("/auth",        Auth);
-		this.router.get("/door/:action", Door);
-		this.router.get("/restart",      Restart);
+		this.router.post("/auth",         Auth);
+		this.router.post("/door/:action", Door);
+		this.router.get("/door/:action",  Door);
+		this.router.get("/restart",       Restart);
 	}
 
 	attachMiddlewares() {
 		this.app.use(BodyParser.json());
 		this.app.use(Express.static(`${__dirname}/../public`));
-		this.app.use("/api", this.router);
 		this.app.use("/api", JWT({
 			secret : process.env.SECRET,
 			algorithms : [
@@ -39,6 +39,7 @@ class MDoS {
 				"/api/auth"
 			]
 		}));
+		this.app.use("/api", this.router);
 		this.app.use(ErrorMiddleware);
 	}
 

@@ -138,6 +138,11 @@ class Q6 {
 		return this;
 	}
 
+	remove() {
+		this._each(element => element.remove());
+		delete this;
+	}
+
 	removeAttr(attr) {
 		this._each(element => element.removeAttribute(attr));
 		

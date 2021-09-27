@@ -11,6 +11,10 @@ class Response {
 		return new Response(path, null, "Your rights are not sufficient to perform this action", 405);
 	}
 
+	static AuthenticationError(path) {
+		return new Response(path, null, "Your authentication token is missing or invalid", 401);
+	}
+
 	static ErrorMiddleware(error, request, response, next) {
 		if (!error)
 			next();
@@ -22,17 +26,14 @@ class Response {
 				code    = 401;
 				message = "Authentication token invalid or missing";
 				break;
-			case "credentials_required":
-				code    = 403;
-				message = "Credentials are required";
-				break;
 			default:
 				code    = error.code;
 				message = error.message;
 				break;
 		}
-		
-		response.status(code).send(JSON.stringify(new Response(request.path, null, message, code)));
+
+		if (!response.headersSent)
+			response.status(error.status || 500).send(JSON.stringify(new Response(request.path, null, message, code)));
 	}
 }
 

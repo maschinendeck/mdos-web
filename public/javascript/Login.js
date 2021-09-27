@@ -1,43 +1,51 @@
 import {$}     from "./Q6.js";
 import APICall from "./APICall.js";
 
-class Login {
-	constructor() {
-		this.container = $("#login");
-		this.username  = $("#username");
-		this.password  = $("#password");
-		this.button    = $("#loginButton");
-	
-		this.button.on("click", () => this.login());
+const Login = (navigator, jwt, setJWT) => {
+
+	const container         = $("#login");
+	const usernameContainer = $("#username");
+	const passwordContainer = $("#password");
+	const button            = $("#loginButton");
+
+	if (jwt) {
+		APICall.JWT = jwt;
+		navigator.changeView(navigator.views.menu);
 	}
 
-	login() {
-		const username = this.username.val();
-		const password = this.password.val();
+	const login = () => {
+		const username = usernameContainer.val();
+		const password = passwordContainer.val();
 
 		APICall.post("/auth", {
 			username,
 			password
-		}).then(response => response.json()).then(json => {
-			if (json.code !== 200) {
-				this.username.attr("disabled", "disabled");
-				this.password.attr("disabled", "disabled");
+		}).then(response => {
+			if (response.code !== 200) {
+				usernameContainer.attr("disabled", "disabled");
+				passwordContainer.attr("disabled", "disabled");
 
-				console.log("error: ", json.message);
-				this.container.addClass("wrong");
+				console.log("error: ", response.message);
+				container.addClass("wrong");
 
 				setTimeout(() => {
-					this.username.removeAttr("disabled");
-					this.password.removeAttr("disabled").get().focus();
-					this.container.removeClass("wrong");
+					usernameContainer.removeAttr("disabled");
+					passwordContainer.removeAttr("disabled").get().focus();
+					container.removeClass("wrong");
 				}, 1000);
 				return;
 			}
-			APICall.JWT = json.data.jwt;
+			setJWT(response.data.jwt);
+			APICall.JWT = response.data.jwt;
+			navigator.changeView(navigator.views.menu);
+			passwordContainer.val("");
+
 		}).catch(error => {
 			console.log("error", error);
 		});
 	}
+
+	button.on("click", login);
 }
 
 export default Login;

@@ -1,7 +1,11 @@
-import {$} from "./Q6.js";
+import {$}     from "./Q6.js";
+import APICall from "./APICall.js";
+import Alert   from "./Alert.js";
 
 class Navigator {
-	constructor() {
+	constructor(jwt, setJWT) {
+		this.jwt     = jwt;
+		this.setJWT  = setJWT;
 		this.buttons = {
 			open    : $("#open"),
 			close   : $("#close"),
@@ -18,10 +22,60 @@ class Navigator {
 			this.changeView(this.views.menu);
 		});
 		this.buttons.open.on("click", event => {
-			this.changeView(this.views.keypad);
+			APICall.get("/door/request").then(() => {
+				this.changeView(this.views.keypad);
+			});
 		});
 
 		this.changeView(this.views.login);
+
+		this.buttons.close.on("click", () => {
+			this.closeDoor();
+		});
+
+		this.buttons.restart.on("click", () => {
+			this.restartSystem();
+		});
+	}
+
+	closeDoor() {
+		APICall.get("/door/close").then(response => {
+			console.log(response);
+			if (response.code && parseInt(response.code) === 401) {
+				this.deauthorize();
+
+				return;
+			}
+
+			if (!response.code || response.code !== 200) {
+				return;
+			}
+
+			new Alert(Alert.Type.SUCCESS, "Tür wird geschlossen.");
+		});
+	}
+
+	restartSystem() {
+		APICall.get("/restart").then(response => {
+			if (response.code && parseInt(response.code) === 401) {
+				this.deauthorize();
+
+				return;
+			}
+
+			switch (response.code) {
+				case 200:
+					new Alert(Alert.Type.SUCCESS, "System wird nun neugestartet.");
+					this.deauthorize();
+					break;
+				case 405:
+					new Alert(Alert.Type.ERROR, `Dir fehlt die Berechtigung diese Aktion durchzuführen`);
+					return;
+				default:
+					new Alert(Alert.Type.ERROR, `Etwas ist schiefgelaufen [Code ${response.code}]`);
+					return;
+			}
+		});
 	}
 
 	changeView(toView) {
@@ -31,6 +85,12 @@ class Navigator {
 		}
 
 		toView.addClass("active");
+	}
+
+	deauthorize() {
+		this.setJWT(null);
+		APICall.JWT = null;
+		this.changeView(this.views.login);
 	}
 }
 

@@ -10,15 +10,42 @@ class UnknownActionError extends Response {
 	}
 }
 
+class IncorrectCodeError extends Response {
+	constructor() {
+		super("/door", null, "According to MDoS, the supplied code was incorrect", 508);
+	}
+}
+
 const Door = (request, response) => {
 	const {action} = request.params;
 	const user     = request.user;
 
-	if (!Can(Capabilities.OPEN_DOOR, user.role))
+	if (!user) {
+		response.json(Response.AuthenticationError("/door"));
+		return;
+	}
+
+	if (!Can(Capabilities.OPEN_DOOR, user.role)) {
 		response.json(InsufficientRightsError("/door"));
 
+		return;
+	}
+
 	switch(action) {
+		case "request":
+			// tell system to show code
+			response.json(new Response("/door/request"));
+			break;
 		case "open":
+			const {code}  = request.body;
+			const correct = "core correct";
+
+			if (correct) {
+				response.json(new Response("/door"))
+			} else {
+				response.json(new IncorrectCodeError());
+			}
+
 			// request display of access code from MDoS unit	
 			Log(`User '${user.email}' requested opening of door`, LogLevel.INFO);
 			break;

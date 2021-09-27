@@ -4,16 +4,23 @@ class APICall {
 			method,
 			headers : {
 				"Content-Type" : "application/json"
-			},
-			body : JSON.stringify(body)
+			}
 		};
+		if (method === "POST")
+			options.body = JSON.stringify(body);
 		if (APICall.JWT)
-			options.headers.Bearer = APICall.JWT;
-		return fetch(`/api${url}`, options);
+			options.headers.Authorization = `Bearer ${APICall.JWT}`;
+		return fetch(`/api${url}`, options).then(response => response.json()).then(json => {
+			if (json.code && parseInt(json.code) === 401) {
+
+			}
+
+			return json;
+		});
 	}
 
 	static async get(path) {
-		return APICall.fetch(url, "GET");
+		return APICall.fetch(path, "GET");
 	}
 
 	static async post(path, data) {
