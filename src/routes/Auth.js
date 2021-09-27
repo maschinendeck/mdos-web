@@ -1,5 +1,6 @@
 const JWT = require("jsonwebtoken");
 
+const Secret                = require("../Models/Secret");
 const {Time, Log, LogLevel} = require("../Std");
 
 const User     = require("../Models/User");
@@ -42,7 +43,7 @@ const Auth = async (request, response) => {
 	const jwt   = await JWT.sign({
 		email : user.email,
 		role  : user.role
-	}, process.env.SECRET, {
+	}, Secret, {
 		expiresIn : (Time.HOURS * hours) / 1000
 	});
 

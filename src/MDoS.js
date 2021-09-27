@@ -3,6 +3,7 @@ const BodyParser = require("body-parser");
 const JWT        = require("express-jwt");
 const {Router}   = Express;
 
+const Secret            = require("./Models/Secret");
 const {ErrorMiddleware} = require("./Response");
 const {Log, LogLevel}   = require("./Std");
 
@@ -30,7 +31,7 @@ class MDoS {
 		this.app.use(BodyParser.json());
 		this.app.use(Express.static(`${__dirname}/../public`));
 		this.app.use("/api", JWT({
-			secret : `${process.env.SECRET}.${Date.now}`, // invalidates tokens on server restart
+			secret : Secret, // invalidates tokens on server restart
 			algorithms : [
 				"HS256"
 			]

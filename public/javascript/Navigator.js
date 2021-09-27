@@ -40,18 +40,21 @@ class Navigator {
 
 	closeDoor() {
 		APICall.get("/door/close").then(response => {
-			console.log(response);
-			if (response.code && parseInt(response.code) === 401) {
-				this.deauthorize();
+			switch (response.code) {
+				case 200:
+					new Alert(Alert.Type.SUCCESS, "Tür wird geschlossen.");
+					break;
+				case 401:
+					this.deauthorize();
+					return;
+				case 405:
+					new Alert(Alert.Type.ERROR, `Dir fehlt die Berechtigung diese Aktion durchzuführen`);
+					return;
+				default:
+					new Alert(Alert.Type.ERROR, `Etwas ist schiefgelaufen [Code ${response.code}]`);
+					return;
 
-				return;
 			}
-
-			if (!response.code || response.code !== 200) {
-				return;
-			}
-
-			new Alert(Alert.Type.SUCCESS, "Tür wird geschlossen.");
 		});
 	}
 
