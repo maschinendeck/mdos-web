@@ -6,6 +6,7 @@ const Login = (navigator, jwt, setJWT) => {
 	const container         = $("#login");
 	const usernameContainer = $("#username");
 	const passwordContainer = $("#password");
+	const form              = $("#loginForm");
 	const button            = $("#loginButton");
 
 	if (jwt) {
@@ -44,6 +45,10 @@ const Login = (navigator, jwt, setJWT) => {
 	}
 
 	button.on("click", login);
+	form.on("submit", (_, event) => {
+		event.preventDefault();
+		login(event);
+	});
 }
 
 export default Login;
