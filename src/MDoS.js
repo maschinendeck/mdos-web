@@ -30,7 +30,7 @@ class MDoS {
 		this.app.use(BodyParser.json());
 		this.app.use(Express.static(`${__dirname}/../public`));
 		this.app.use("/api", JWT({
-			secret : process.env.SECRET,
+			secret : `${process.env.SECRET}.${Date.now}`, // invalidates tokens on server restart
 			algorithms : [
 				"HS256"
 			]
