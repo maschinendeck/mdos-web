@@ -45,7 +45,6 @@ class Navigator {
 					new Alert(Alert.Type.SUCCESS, "Tür wird geschlossen.");
 					break;
 				case 401:
-					console.log(response);
 					this.deauthorize();
 					return;
 				case 405:
