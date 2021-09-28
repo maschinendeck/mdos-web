@@ -1,6 +1,7 @@
 const Express    = require("express");
 const BodyParser = require("body-parser");
 const JWT        = require("express-jwt");
+const SerialPort = require("serialport");
 const {Router}   = Express;
 
 const Secret            = require("./Models/Secret");
@@ -15,16 +16,26 @@ class MDoS {
 	constructor() {
 		this.app    = Express();
 		this.router = Router();
+		this.serial = new SerialPort(process.env.SERIALPORT || "", {
+			baudRate : parseInt(process.env.BAUDRATE) || 57600
+		});
 
+		this.handleSerial();
 		this.attachMiddlewares();
 		this.attachRoutes();
+	}
+
+	handleSerial() {
+		this.serial.on("error", error => {
+			Log(`[ERROR] SerialPort: ${error.message.replace("Error: ", "")}`, LogLevel.ERROR);
+		});
 	}
 
 	attachRoutes() {
 		this.router.post("/auth",         Auth);
 		this.router.post("/door/:action", Door);
 		this.router.get("/door/:action",  Door);
-		this.router.get("/restart",       Restart);
+		this.router.get("/restart",       Restart(this.serial));
 	}
 
 	attachMiddlewares() {
