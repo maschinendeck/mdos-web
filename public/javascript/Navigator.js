@@ -22,8 +22,15 @@ class Navigator {
 			this.changeView(this.views.menu);
 		});
 		this.buttons.open.on("click", event => {
-			APICall.get("/door/request").then(() => {
-				this.changeView(this.views.keypad);
+			APICall.get("/door/request").then(response => {
+				switch (response.code) {
+					case 200:
+						this.changeView(this.views.keypad);
+						break;
+					default:
+						new Alert(`Fehler beim Anfordern des Türcodes: ${response.data}`);
+						break;
+				}
 			});
 		});
 

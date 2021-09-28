@@ -1,12 +1,12 @@
 const Express    = require("express");
 const BodyParser = require("body-parser");
 const JWT        = require("express-jwt");
-const SerialPort = require("serialport");
 const {Router}   = Express;
 
 const Secret            = require("./Models/Secret");
 const {ErrorMiddleware} = require("./Response");
 const {Log, LogLevel}   = require("./Std");
+const Serial            = require("./Serial");
 
 const Auth    = require("./routes/Auth");
 const Door    = require("./routes/Door");
@@ -14,27 +14,19 @@ const Restart = require("./routes/Restart");
 
 class MDoS {
 	constructor() {
-		this.app    = Express();
-		this.router = Router();
-		this.serial = new SerialPort(process.env.SERIALPORT || "", {
-			baudRate : parseInt(process.env.BAUDRATE) || 57600
-		});
+		this.app     = Express();
+		this.router  = Router();
+		this.serial  = new Serial();
 
-		this.handleSerial();
 		this.attachMiddlewares();
 		this.attachRoutes();
 	}
 
-	handleSerial() {
-		this.serial.on("error", error => {
-			Log(`[ERROR] SerialPort: ${error.message.replace("Error: ", "")}`, LogLevel.ERROR);
-		});
-	}
-
 	attachRoutes() {
+		const doorHandler = Door(this.serial);
 		this.router.post("/auth",         Auth);
-		this.router.post("/door/:action", Door);
-		this.router.get("/door/:action",  Door);
+		this.router.all("/door/:action", doorHandler);
+		//this.router.get("/door/:action",  doorHandler);
 		this.router.get("/restart",       Restart(this.serial));
 	}
 

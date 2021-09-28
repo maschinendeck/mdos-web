@@ -4,18 +4,21 @@ const User            = require("../Models/User");
 
 const {Capabilities} = User;
 
-const Restart = (request, response) => {
-	const {user} = request;
+const Restart = serial => {
 
-	if (!User.Can(Capabilities.RESTART, user.role)) {
-		response.json(Response.InsufficientRightsError());
-		return;
+	return (request, response) => {
+		const {user} = request;
+
+		if (!User.Can(Capabilities.RESTART, user.role)) {
+			response.json(Response.InsufficientRightsError());
+			return;
+		}
+
+		serial.write("reboot");
+
+		Log(`User '${user.email}' requested system restart`, LogLevel.INFO);
+		response.json(new Response("/restart"));
 	}
-
-	// tell MDoS to Reset
-
-	Log(`User '${user.email}' requested system restart`, LogLevel.INFO);
-	response.json(new Response("/restart"));
 }
 
 module.exports = Restart;
