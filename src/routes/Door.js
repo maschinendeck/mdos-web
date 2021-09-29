@@ -22,19 +22,20 @@ const Door = serial => {
 	serial.addListener(response => {
 		switch(response.code) {
 			case 200:
-				if (response.message !== "waiting") {
-					state = Door.State.SUCCESS;
-					Log("door success");
-				} else 
-					state = Door.State.REQUESTED;
+				switch (response.message) {
+					case "waiting":
+						state = Door.State.SUCCESS;
+						break;
+					default:
+						state = Door.State.REQUESTED;
+						break;
+				}
 				break;
 			case 400:
 				state = Door.State.WRONG_CODE;
-				Log("door wrong code");
 				break;
 			case 408:
 				state = Door.State.TIMEOUT;
-				Log("door timeout");
 				break;
 			default:
 				break;
@@ -59,7 +60,7 @@ const Door = serial => {
 		switch(action) {
 			case "request":
 				// tell system to show code
-				Log("STATE " + state);
+				Log(`User '${user.email}' requested opening of door`, LogLevel.INFO);
 				serial.write("open");
 				while (state === Door.State.IDLE)
 					await Sleep(100);
@@ -71,21 +72,21 @@ const Door = serial => {
 			case "open":
 				const {code}  = request.body;
 				let correct   = false;
-				Log("STATE " + state + ", CODE " + code);
+				Log(`Checking code`, LogLevel.INFO);
 
 				serial.write(`code ${code}`);
 
-				while (state === Door.State.REQUESTED) {
+				while (state === Door.State.REQUESTED)
 					await Sleep(100);
-				}
 				correct = state === Door.State.SUCCESS;
 
 				if (correct) {
 					response.json(new Response("/door"))
+					Log(`User '${user.email}' submitted correct code '${code}'`, LogLevel.SUCCESS);
 				} else {
+					Log(`User '${user.email}' submitted wrong code '${code}'`, LogLevel.ERROR);
 					response.json(new IncorrectCodeError());
 				}
-				Log(`User '${user.email}' requested opening of door`, LogLevel.INFO);
 				return;
 			case "close":
 				serial.write("close");

@@ -4,6 +4,10 @@
 	grid-gap: 1rem;
 	margin-bottom: 2rem;
 
+	&.idle {
+		opacity: 0.5;
+	}
+
 	button {
 		border-radius: 500px;
 		justify-self: center;

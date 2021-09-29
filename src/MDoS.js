@@ -24,7 +24,7 @@ class MDoS {
 
 	attachRoutes() {
 		const doorHandler = Door(this.serial);
-		this.router.post("/auth",         Auth);
+		this.router.post("/auth",        Auth);
 		this.router.all("/door/:action", doorHandler);
 		//this.router.get("/door/:action",  doorHandler);
 		this.router.get("/restart",       Restart(this.serial));

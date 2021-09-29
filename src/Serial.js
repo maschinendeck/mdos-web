@@ -23,7 +23,6 @@ class Serial {
 		});
 
 		this.pipe.on("data", data => {
-			console.log(data);
 			if (data === "ready") {
 				Log("MDoS door unit ready", LogLevel.INFO);
 				this.ready_ = true;
@@ -36,7 +35,6 @@ class Serial {
 				code    : parseInt(parts.shift()),
 				message : parts.join(' ')
 			};
-			console.log("READ", response);
 			for (const callback of this.callbacks_) {
 				callback(response);
 			}
@@ -49,7 +47,6 @@ class Serial {
 
 	data(callback) {
 		return this.pipe.on("data", data => {
-			console.log("SERIALD", data);
 			callback(data);
 		});
 	}

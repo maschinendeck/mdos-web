@@ -27,8 +27,14 @@ class Navigator {
 					case 200:
 						this.changeView(this.views.keypad);
 						break;
+					case 401:
+						this.changeView(this.views.login);
+						break;
+					case 430:
+						new Alert(Alert.Type.ERROR, "Timeout während des Vorgangs");
+						break;
 					default:
-						new Alert(`Fehler beim Anfordern des Türcodes: ${response.data}`);
+						new Alert(Alert.Type.ERROR, `Fehler beim Anfordern des Türcodes: ${response.message} [${response.code}]`);
 						break;
 				}
 			});
