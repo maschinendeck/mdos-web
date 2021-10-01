@@ -51,7 +51,6 @@ const Login = (navigator, jwt, setJWT) => {
 		});
 	}
 
-	button.on("click", login);
 	form.on("submit", (_, event) => {
 		event.preventDefault();
 		login(event);

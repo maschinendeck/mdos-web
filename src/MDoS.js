@@ -50,7 +50,7 @@ class MDoS {
 		}).unless({
 			path : [
 				"/api/auth",
-				"/api/password",
+				/\/api\/password\/.+/,
 				"/password"
 			]
 		}));
@@ -63,10 +63,6 @@ class MDoS {
 			response.json(new MDoSNotReadyError(request.path));
 		});
 		this.app.use("/api", this.router);
-		this.app.use("/password", (request, response, next) => {
-			console.log("pw");
-			response.sendFile(`${__dirname}/../public/index.html`);
-		});
 		this.app.use(ErrorMiddleware);
 		this.app.use(Express.static(`${__dirname}/../public`));
 	}

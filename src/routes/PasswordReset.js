@@ -1,4 +1,5 @@
-const Response = require("../Response");
+const Response        = require("../Response");
+const {Log, LogLevel} = require("../Std");
 
 const User = require("../Models/User");
 
@@ -15,10 +16,10 @@ class InvalidKeyError extends Response {
 }
 
 const PasswordReset = async (request, response) => {
-	const {key}                            = request.params;
-	const {password, passwordConfirmation} = request.body;
+	const {key}                       = request.params;
+	const {password, passwordConfirm} = request.body;
 
-	if (password !== passwordConfirmation) {
+	if (password !== passwordConfirm) {
 		response.json(new PasswordsDifferError());
 		return;
 	}
@@ -37,6 +38,7 @@ const PasswordReset = async (request, response) => {
 	user.password       = User.HashPassword(password, user.salt);
 	user.password_reset = null;
 	user.save();
+	Log(`Password changed for user '${user.email}'`, LogLevel.INFO);
 
 	response.json(new Response("/password"));
 }

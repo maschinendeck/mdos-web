@@ -61,6 +61,20 @@ Mailer.Template = message => {
 			width: 80px;
 			height: auto;
 		}
+
+		a {
+			text-decoration: none;
+			color: #00a7ee;
+		}
+
+		pre {
+			background: #111;
+			color: #eee;
+			margin: 2rem;
+			border-radius: 4px;
+			font-size: 1.2rem;
+			padding: 2rem;
+		}
 	</style>
 </head>
 <body>
