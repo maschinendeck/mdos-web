@@ -1,7 +1,7 @@
 const SerialPort = require("serialport");
 const ReadLine   = require("@serialport/parser-readline");
 
-const {Log, LogLevel} = require("./Std");
+const {Log, LogLevel, IsDevelopment} = require("./Std");
 
 class Serial {
 	constructor() {
@@ -17,16 +17,18 @@ class Serial {
 
 		this.port.on("open", () => {
 			Log("Serial port is open", LogLevel.INFO);
+			this.write("reboot");
 		});
 		this.port.on("error", error => {
 			Log(`[ERROR] SerialPort: ${error.message.replace("Error: ", "")}`, LogLevel.ERROR);
 		});
 
 		this.pipe.on("data", data => {
+			if (IsDevelopment())
+				console.log("[DEBUG] Serial " + data);
 			if (data === "ready") {
 				Log("MDoS door unit ready", LogLevel.INFO);
 				this.ready_ = true;
-				this.write("lol");
 			}
 			const parts = data.split(' ');
 			if (parts.length < 2)
@@ -41,8 +43,18 @@ class Serial {
 		});
 	}
 
+	ready() {
+		return this.ready_;
+	}
+
 	addListener(callback) {
 		this.callbacks_.push(callback);
+
+		return this.callbacks_.length - 1;
+	}
+
+	removeListener(id) {
+		this.callbacks_ = this.callbacks_.slice(id, 1);
 	}
 
 	data(callback) {

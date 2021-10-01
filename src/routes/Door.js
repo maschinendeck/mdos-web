@@ -16,32 +16,19 @@ class IncorrectCodeError extends Response {
 	}
 }
 
+class CodeTimeoutError extends Response {
+	constructor() {
+		super("/door", null, "Timeout for code request", 430);
+	}
+}
+
+class InvalidMDoSStateError extends Response {
+	constructor() {
+		super("/door", null, "MDoS is in an invalid state", 508);
+	}
+}
+
 const Door = serial => {
-	let state = Door.State.IDLE;
-
-	serial.addListener(response => {
-		switch(response.code) {
-			case 200:
-				switch (response.message) {
-					case "waiting":
-						state = Door.State.SUCCESS;
-						break;
-					default:
-						state = Door.State.REQUESTED;
-						break;
-				}
-				break;
-			case 400:
-				state = Door.State.WRONG_CODE;
-				break;
-			case 408:
-				state = Door.State.TIMEOUT;
-				break;
-			default:
-				break;
-		}
-	});
-
 	return async (request, response) => {
 		const {action} = request.params;
 		const user     = request.user;
@@ -61,45 +48,102 @@ const Door = serial => {
 			case "request":
 				// tell system to show code
 				Log(`User '${user.email}' requested opening of door`, LogLevel.INFO);
+
+				Log("Send 'open' request to MDoS", LogLevel.INFO);
 				serial.write("open");
-				while (state === Door.State.IDLE)
+
+				let loop  = true;
+				let error = null;
+
+				// prevent endless loop
+				const deadManSwitch = setTimeout(() => {
+					loop  = false;
+				}, 20000);
+
+				const listener = serial.addListener(response => {
+					if (response.code === 200 && response.message === "waiting")
+						return;
+					if (response.code === 408)
+						error = 1;
+					clearTimeout(deadManSwitch);
+					loop = false;
+				});
+
+				while (loop)
 					await Sleep(100);
-				if (state === Door.State.REQUESTED)
-					response.json(new Response("/door/request"));
+				
+				serial.removeListener(listener);
+
+				if (error) {
+					response.json(new CodeTimeoutError());
+					Log("Open request timed out", LogLevel.INFO);
+				}
 				else
-					response.json(new Response("/door/request", null, "timeout", 430));
+					response.json(new Response("/door"));
+				
 				return;
-			case "open":
+			case "open": {
 				const {code}  = request.body;
-				let correct   = false;
-				Log(`Checking code`, LogLevel.INFO);
+				Log(`Sent code to MDoS for validation`, LogLevel.INFO);
 
 				serial.write(`code ${code}`);
 
-				while (state === Door.State.REQUESTED)
-					await Sleep(100);
-				correct = state === Door.State.SUCCESS;
+				let loop    = true;
+				let error   = null;
+				let correct = false;
 
-				if (correct) {
-					response.json(new Response("/door"))
-					Log(`User '${user.email}' submitted correct code '${code}'`, LogLevel.SUCCESS);
-				} else {
-					Log(`User '${user.email}' submitted wrong code '${code}'`, LogLevel.ERROR);
+				// prevent endless loop
+				const deadManSwitch = setTimeout(() => {
+					loop  = false;
+					error = 1;
+				}, 20000);
+
+				const listener = serial.addListener(response => {
+					switch(response.code) {
+						case 200:
+							if (response.message === "waiting")
+								return;
+							correct = true;
+							Log(`User '${user.email}' submitted correct code '${code}'`, LogLevel.INFO);
+							Log("Opening door now", LogLevel.WARN);
+							break;
+						case 400:
+							error = 400;
+							Log(`User '${user.email}' submitted incorrect code '${code}'`, LogLevel.INFO);
+							break;
+						default:
+							error = 1;
+							break;
+						
+					}
+					clearTimeout(deadManSwitch);
+					loop = false;
+				});
+
+				while (loop)
+					await Sleep(100);
+				
+				serial.removeListener(listener);
+
+				if (!error && correct)
+					response.json(new Response("/door"));
+				else if (error === 400)
 					response.json(new IncorrectCodeError());
-				}
+				else
+					response.json(new InvalidMDoSStateError());
+
 				return;
+			}
 			case "close":
 				serial.write("close");
 				Log(`User '${user.email}' requested closing of door`, LogLevel.INFO);
-				break;
+				response.json(new Response("/door"));
+				return;
 			default:
-				console.log(`Unknow action ::${action}::`);
+				Log(`Received unknow action '${action}'`, LogLevel.WARN);
 				response.json(new UnknownActionError(action));
 				return;
 		}
-		
-		// everything went fine, send ACK
-		//response.json(new Response("/door"));
 	}
 };
 Door.State = Object.freeze({

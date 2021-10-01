@@ -16,7 +16,7 @@ class Keypad {
 				if (value === "C")
 					this.clearDisplay();
 				else if (value === "OK")
-					this.send();
+					this.send(element);
 				else {
 					this.addToDisplay(value);
 				}
@@ -62,7 +62,10 @@ class Keypad {
 		this.display.attr("value", currentValue.toString() + "" + char.toString());
 	}
 
-	send() {
+	send(element) {
+		const currentValue = element.html();
+		element.html("<div class=spinner>O</div>");
+
 		this.wrapper.addClass("idle");
 		$("button").attr("disabled", "disabled");
 		APICall.post("/door/open", {
@@ -70,6 +73,7 @@ class Keypad {
 		}).then(response => {
 			this.wrapper.removeClass("idle");
 			$("button").removeAttr("disabled");
+			element.html(currentValue);
 
 			if (response.code && parseInt(response.code) === 401) {
 				this.navigator.deauthorize();
@@ -96,7 +100,6 @@ class Keypad {
 					this.clearDisplay();
 					return;
 			}
-
 		});
 	}
 

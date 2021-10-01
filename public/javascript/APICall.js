@@ -1,3 +1,5 @@
+import Alert from "./Alert";
+
 class APICall {
 	static async fetch(url = "/", method = "POST", body = {}) {
 		const options = {
@@ -11,8 +13,10 @@ class APICall {
 		if (APICall.JWT)
 			options.headers.Authorization = `Bearer ${APICall.JWT}`;
 		return fetch(`/api${url}`, options).then(response => response.json()).then(json => {
-			if (json.code && parseInt(json.code) === 401) {
+			if (json.code === 501) {
+				new Alert(Alert.Type.ERROR, "Das System bootet gerade");
 
+				return null;
 			}
 
 			return json;

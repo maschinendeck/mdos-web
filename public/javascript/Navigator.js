@@ -18,26 +18,27 @@ class Navigator {
 			keypad : $("#view_keypad")
 		};
 
-		this.buttons.abort.on("click", event => {
+		this.buttons.abort.on("click", () => {
 			this.changeView(this.views.menu);
 		});
-		this.buttons.open.on("click", event => {
+		this.buttons.open.on("click", () => {
 			APICall.get("/door/request").then(response => {
 				switch (response.code) {
 					case 200:
-						this.changeView(this.views.keypad);
 						break;
 					case 401:
 						this.changeView(this.views.login);
 						break;
 					case 430:
 						new Alert(Alert.Type.ERROR, "Timeout während des Vorgangs");
+						this.changeView(this.views.menu);
 						break;
 					default:
 						new Alert(Alert.Type.ERROR, `Fehler beim Anfordern des Türcodes: ${response.message} [${response.code}]`);
 						break;
 				}
 			});
+			this.changeView(this.views.keypad);
 		});
 
 		this.changeView(this.views.login);
