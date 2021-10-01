@@ -27,7 +27,7 @@ const Login = (navigator, jwt, setJWT) => {
 			username,
 			password
 		}).then(response => {
-			if (response.code !== 200) {
+			if (response?.code !== 200) {
 				usernameContainer.attr("disabled", "disabled");
 				passwordContainer.attr("disabled", "disabled");
 				container.addClass("wrong");
