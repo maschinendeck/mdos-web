@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MDoS</title>
+	<link rel=stylesheet type=text/css href=css/mdos.css />
+	<meta name=viewport content="width=device-width, initial-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-title" content="MDoS" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<link rel="apple-touch-icon" sizes="120x120" href="assets/appIcon@120.png" />
+	<link rel="apple-touch-icon" sizes="152x152" href="assets/appIcon@152.png" />
+	<link rel="apple-touch-icon" sizes="167x167" href="assets/appIcon@167.png" />
+	<link rel="apple-touch-icon" sizes="180x180" href="assets/appIcon@180.png" />
+	<link rel="apple-touch-icon" sizes="1024x1024" href="assets/appIcon@1024.png" />
+	<script type=module src=javascript/mdos.min.js></script>
+</head>
+<body>
+
+<section class="view" id=view_login>
+	<header>
+		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<p>
+			Maschinendeck Trier e.V.
+		</p>
+		<h1>Türsystem</h1>
+	</header>
+	<main id=login>
+		<form id="loginForm" method="POST">
+			<input type=text name=username id=username placeholder=E-Mail />
+			<input type=password name=password id=password placeholder=Password />
+			<button class=blue id=loginButton>Login</button>
+			<a href="#forgotPassword">Passwort vergessen?</a>
+		</form>
+	</main>
+</section>
+<section class="view" id=view_menu>
+	<header>
+		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<p>
+			Maschinendeck Trier e.V.
+		</p>
+		<h1>Türsystem</h1>
+	</header>
+	<main>
+		<button id=open class=green>öffnen</button>
+		<button id=close class=red>schließen</button>
+		<button id=restart class=blue>neustarten</button>
+	</main>
+</section>
+
+<section class="view" id=view_keypad style="z-index: 250;">
+	<header>
+		<input type=text name=pin id=display maxlength="4" value="" pattern="[0-9]{4}" readonly/>
+	</header>
+	<main style="margin: 0;">
+		<section class=keypad>
+			<button>1</button>
+			<button>2</button>
+			<button>3</button>
+
+			<button>4</button>
+			<button>5</button>
+			<button>6</button>
+
+			<button>7</button>
+			<button>8</button>
+			<button>9</button>
+			
+			<button>C</button>
+			<button>0</button>
+			<button>OK</button>
+		</section>
+		<button class=red id=abort>abbrechen</button>
+	</main>
+</section>
+
+<section class="view" id=view_forgotPassword>
+	<header>
+		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<p>
+			Maschinendeck Trier e.V.
+		</p>
+		<h1>Türsystem</h1>
+	</header>
+	<main>
+		<p>
+			<a href="/">&laquo; zurück</a> 
+			<span style="float:right;">
+				Passwortreset anfordern
+			</span>
+		</p>
+		<form id="forgotPasswordForm" method="POST">
+			<input type=text name=fgEmail id=fgEmail placeholder=E-Mail />
+			<button class=blue id=fgSendButton>zurücksetzen</button>
+		</form>
+	</main>
+</section>
+
+<section class="view" id=view_changePassword>
+	<header>
+		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<p>
+			Maschinendeck Trier e.V.
+		</p>
+		<h1>Türsystem</h1>
+	</header>
+	<main>
+		<p>
+			<a href="/">&laquo; zurück</a> 
+			<span style="float:right;">
+				Passwort ändern
+			</span>
+		</p>
+		<form id="changePasswordForm" method="POST">
+			<input type=password name=chPassword id=chPassword placeholder=Passwort />
+			<input type=password name=chPasswordConfirm id=chPasswordConfirm placeholder="Passwort widerholen" />
+			<button class=blue id=chSendButton>Passwort ändern</button>
+		</form>
+	</main>
+</section>
+
+<footer>
+
+</footer>
+
+<section id=alerts class=alert-container>
+
+</section>
+
+</body>
+</html>

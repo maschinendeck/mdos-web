@@ -1,6 +1,9 @@
 .idea
+.vscode
 .DS_Store
 
 node_modules
 *.css
+*.min.js
 .env
+database.sqlite
