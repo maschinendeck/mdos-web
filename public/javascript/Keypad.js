@@ -5,6 +5,7 @@ class Keypad {
 	constructor(navigator) {
 		this.navigator = navigator;
 		this.keys      = $(".keypad > button");
+		this.wrapper   = $(".keypad");
 		this.display   = $("#display");
 		this.container = $("#view_keypad");
 
@@ -15,7 +16,7 @@ class Keypad {
 				if (value === "C")
 					this.clearDisplay();
 				else if (value === "OK")
-					this.send();
+					this.send(element);
 				else {
 					this.addToDisplay(value);
 				}
@@ -61,10 +62,19 @@ class Keypad {
 		this.display.attr("value", currentValue.toString() + "" + char.toString());
 	}
 
-	send() {
+	send(element) {
+		const currentValue = element.html();
+		element.html("<div class=spinner>O</div>");
+
+		this.wrapper.addClass("idle");
+		$("button").attr("disabled", "disabled");
 		APICall.post("/door/open", {
 			code : this.display.val()
 		}).then(response => {
+			this.wrapper.removeClass("idle");
+			$("button").removeAttr("disabled");
+			element.html(currentValue);
+
 			if (response.code && parseInt(response.code) === 401) {
 				this.navigator.deauthorize();
 
@@ -83,13 +93,13 @@ class Keypad {
 				case 508:
 					new Alert(Alert.Type.ERROR, "Der angegebene Code war inkorrekt.");
 					this.clearDisplay();
+					this.navigator.changeView(this.navigator.views.menu);
 					return;
 				default:
 					new Alert(Alert.Type.ERROR, `Etwas ist schiefgelaufen [Code ${response.code}]`);
 					this.clearDisplay();
 					return;
 			}
-
 		});
 	}
 

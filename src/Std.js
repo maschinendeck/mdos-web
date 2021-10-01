@@ -75,6 +75,12 @@ class Std {
 			return callerName.replace(/ \(.+\)$/, '').replace(/(at|new) /gi, "").replace(".<anonymous>", "").trim();
 		}
 	}
+
+	static Sleep(ms) {
+		return new Promise(resolve => {
+		  setTimeout(resolve, ms);
+		});
+	}
 }
 Std.LogLevel = Object.freeze({
 	NORMAL  : 1,

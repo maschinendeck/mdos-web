@@ -4,13 +4,13 @@
   "description": "The frontend of MDoS exposed to the world - includes user, rights and access management",
   "main": "main.js",
   "scripts": {
-    "start": "node .",
+    "start": "export NODE_ENV=production && node .",
     "dev": "nodemon . & npm run watch:css & npm run watch:js",
     "build": "npm run build:css && npm run build:js",
     "build:css": "node-sass public/css/mdos.scss public/css/mdos.css",
     "build:js": "webpack --config webpack.config.js",
     "watch:css": "node-sass public/css/mdos.scss -wo public/css/",
-	"watch:js" : "webpack --config webpack.config.js --watch",
+    "watch:js": "webpack --config webpack.config.js --watch",
     "install": "npm run build && pm2 start main.js --name mdos && pm2 save",
     "remove": "pm2 stop mdos && pm2 delete mdos && pm2 save",
     "usermanager": "node bin/usermanager.js"
@@ -29,6 +29,7 @@
     "express-jwt": "^6.1.0",
     "jsonwebtoken": "^8.5.1",
     "sequelize": "^6.6.5",
+    "serialport": "^9.2.3",
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {

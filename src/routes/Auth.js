@@ -35,6 +35,7 @@ const Auth = async (request, response) => {
 	const hashedPassword = User.HashPassword(password, user.salt);
 
 	if (hashedPassword !== user.password) {
+		Log(`User '${user.email}' supplied wrong credentials`, LogLevel.ERROR);
 		response.json(new AuthenticationError());
 		return;
 	}

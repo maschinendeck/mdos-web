@@ -4,27 +4,36 @@ const JWT        = require("express-jwt");
 const {Router}   = Express;
 
 const Secret            = require("./Models/Secret");
-const {ErrorMiddleware} = require("./Response");
+const Response          = require("./Response");
 const {Log, LogLevel}   = require("./Std");
+const Serial            = require("./Serial");
+const {ErrorMiddleware} = Response;
 
 const Auth    = require("./routes/Auth");
 const Door    = require("./routes/Door");
 const Restart = require("./routes/Restart");
 
+class MDoSNotReadyError extends Response {
+	constructor(path) {
+		super(path, null, "MDoS is still booting up...", 501);
+	}
+}
+
 class MDoS {
 	constructor() {
-		this.app    = Express();
-		this.router = Router();
+		this.app     = Express();
+		this.router  = Router();
+		this.serial  = new Serial();
 
 		this.attachMiddlewares();
 		this.attachRoutes();
 	}
 
 	attachRoutes() {
-		this.router.post("/auth",         Auth);
-		this.router.post("/door/:action", Door);
-		this.router.get("/door/:action",  Door);
-		this.router.get("/restart",       Restart);
+		const doorHandler = Door(this.serial);
+		this.router.post("/auth",        Auth);
+		this.router.all("/door/:action", doorHandler);
+		this.router.get("/restart",      Restart(this.serial));
 	}
 
 	attachMiddlewares() {
@@ -40,6 +49,14 @@ class MDoS {
 				"/api/auth"
 			]
 		}));
+		// activate when ready state is working correctly
+		this.app.use("/api", (request, response, next) => {
+			if (this.serial.ready()) {
+				next();
+				return;
+			}
+			response.json(new MDoSNotReadyError(request.path));
+		});
 		this.app.use("/api", this.router);
 		this.app.use(ErrorMiddleware);
 	}
