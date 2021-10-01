@@ -14,7 +14,7 @@ const Restart = serial => {
 			return;
 		}
 
-		serial.write("reboot");
+		serial.reboot();
 
 		Log(`User '${user.email}' requested system restart`, LogLevel.INFO);
 		response.json(new Response("/restart"));

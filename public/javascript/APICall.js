@@ -16,6 +16,7 @@ class APICall {
 			if (json.code === 501) {
 				new Alert(Alert.Type.ERROR, "Das System bootet gerade");
 
+				console.log(json);
 				return null;
 			}
 

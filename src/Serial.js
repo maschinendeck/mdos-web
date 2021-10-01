@@ -43,6 +43,11 @@ class Serial {
 		});
 	}
 
+	reboot() {
+		this.ready_ = false;
+		this.write("reboot");
+	}
+
 	ready() {
 		return this.ready_;
 	}

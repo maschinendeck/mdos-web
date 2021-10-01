@@ -9,12 +9,17 @@ const Login = (navigator, jwt, setJWT) => {
 	const form              = $("#loginForm");
 	const button            = $("#loginButton");
 
+	let loggingIn = false;
+
 	if (jwt) {
 		APICall.JWT = jwt;
 		navigator.changeView(navigator.views.menu);
 	}
 
 	const login = () => {
+		if (loggingIn)
+			return;
+		loggingIn      = true;
 		const username = usernameContainer.val();
 		const password = passwordContainer.val();
 
@@ -31,6 +36,7 @@ const Login = (navigator, jwt, setJWT) => {
 					usernameContainer.removeAttr("disabled");
 					passwordContainer.removeAttr("disabled").get().focus();
 					container.removeClass("wrong");
+					loggingIn = false;
 				}, 1000);
 				return;
 			}
@@ -38,9 +44,10 @@ const Login = (navigator, jwt, setJWT) => {
 			APICall.JWT = response.data.jwt;
 			navigator.changeView(navigator.views.menu);
 			passwordContainer.val("");
-
+			loggingIn = false;
 		}).catch(error => {
 			console.log("error", error);
+			loggingIn = false;
 		});
 	}
 
