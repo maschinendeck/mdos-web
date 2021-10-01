@@ -48,4 +48,54 @@ TOKEN_HOURS
  * @optional
  */
 PORT
+
+/*
+ * Port for serial communication (/dev/ttyserial.something)
+ * @default ""
+ */
+SERIALPORT
+
+/*
+ * Baudrate for Serial connection with MDoS
+ *
+ * @default 9600
+ */
+BAUDRATE
+
+/*
+ * Domain of this application
+ *
+ * @default null
+ */
+DOMAIN
+/*
+ * Mailserver to use for "change password" functionality
+ *
+ * @default hamal.uberspace.de
+ * @optional
+ */
+MAIL_SERVER
+
+/*
+ * User for access to mailserver
+ *
+ * @default noreply@tuer.maschinendeck.org
+ * @optional
+ */
+MAIL_USER
+
+/*
+ * Password for SMTP user
+ *
+ * @default null
+ */
+MAIL_PASSWORD
+
+/*
+ * SMTP port on mail server
+ * 
+ * @default 587
+ * @optional
+ */
+MAIL_PORT
 ```

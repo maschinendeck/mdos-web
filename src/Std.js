@@ -76,6 +76,10 @@ class Std {
 		}
 	}
 
+	static StripHTML(html) {
+		return html.replace(/(&lt;([^>]+)>)/gi, "");
+	}
+
 	static Sleep(ms) {
 		return new Promise(resolve => {
 		  setTimeout(resolve, ms);

@@ -1,8 +1,13 @@
+require("dotenv").config();
+
 const {Op}     = require("sequelize");
 const inquirer = require("inquirer");
 
-const {Log, LogLevel}            = require("../src/Std");
-const User                       = require("../src/Models/User");
+const {Log, LogLevel} = require("../src/Std");
+const User            = require("../src/Models/User");
+const Mailer          = require("../src/Mailer");
+
+const mailer = new Mailer();
 
 const mainREPL = async () => {
 	return await inquirer.prompt([
@@ -227,8 +232,26 @@ const createUser = () => {
 			Log(`User with email '${email}' already exists`, LogLevel.ERROR);
 			process.exit();
 		}
-		const capabilities    = role;
-		const initialPassword = password && password !== "" ? password : User.GeneratePassword();
+		let initialPassword = password;
+
+		if (!password || password === "") {
+			initialPassword = User.GeneratePassword();
+
+			mailer.send(email, "MDoS – Ein Account wurde für dich erstellt!", `
+				<p>
+					Im Maschindendeck Trier e.V. Türsystem unter
+					<a href="https://${process.env.DOMAIN}">https://${process.env.DOMAIN}</a>
+					wurde ein Account für dich erstellt!
+				</p>
+				<br />
+				<pre>
+Benutzername: ${email}
+Passwort    : ${initialPassword}
+				</pre>
+			`);
+			Log("Sent email with initial password to user", LogLevel.SUCCESS);
+		}
+
 		const salt            = User.GenerateSalt();
 		const newUser         = User.build({
 			firstname,

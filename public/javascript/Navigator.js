@@ -13,9 +13,11 @@ class Navigator {
 			abort   : $("#abort")
 		};
 		this.views = {
-			login  : $("#view_login"),
-			menu   : $("#view_menu"),
-			keypad : $("#view_keypad")
+			login          : $("#view_login"),
+			menu           : $("#view_menu"),
+			keypad         : $("#view_keypad"),
+			forgotPassword : $("#view_forgotPassword"),
+			changePassword : $("#view_changePassword")
 		};
 
 		this.buttons.abort.on("click", () => {
@@ -50,6 +52,32 @@ class Navigator {
 		this.buttons.restart.on("click", () => {
 			this.restartSystem();
 		});
+
+		window.onpopstate = event => {
+			const {hash} = event.currentTarget.location;
+
+			this.processAnchor(hash);
+		}
+
+		const anchor = Navigator.Anchor();
+		if (anchor)
+			this.processAnchor(anchor);
+	}
+
+	processAnchor(anchor) {
+		if (!anchor || anchor === "")
+			return;
+
+		switch(anchor) {
+			case "#forgotPassword":
+				this.changeView(this.views.forgotPassword);
+				break;
+			case "#changePassword":
+				this.changeView(this.views.changePassword);
+				break;
+			default:
+				return;
+		}
 	}
 
 	closeDoor() {
@@ -108,6 +136,12 @@ class Navigator {
 		this.setJWT(null);
 		APICall.JWT = null;
 		this.changeView(this.views.login);
+	}
+
+	static Anchor() {
+		const anchor = document.URL.split("#");
+
+		return anchor.length > 1 ? `#${anchor[anchor.length - 1]}` : null;
 	}
 }
 

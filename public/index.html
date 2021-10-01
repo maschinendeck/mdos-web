@@ -26,9 +26,10 @@
 	</header>
 	<main id=login>
 		<form id="loginForm" method="POST">
-			<input type=text name=username id=username placeholder=Username />
+			<input type=text name=username id=username placeholder=E-Mail />
 			<input type=password name=password id=password placeholder=Password />
 			<button class=blue id=loginButton>Login</button>
+			<a href="#forgotPassword">Passwort vergessen?</a>
 		</form>
 	</main>
 </section>
@@ -70,6 +71,51 @@
 			<button>OK</button>
 		</section>
 		<button class=red id=abort>abbrechen</button>
+	</main>
+</section>
+
+<section class="view" id=view_forgotPassword>
+	<header>
+		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<p>
+			Maschinendeck Trier e.V.
+		</p>
+		<h1>Türsystem</h1>
+	</header>
+	<main>
+		<p>
+			<a href="/">&laquo; zurück</a> 
+			<span style="float:right;">
+				Passwortreset anfordern
+			</span>
+		</p>
+		<form id="forgotPasswordForm" method="POST">
+			<input type=text name=fgEmail id=fgEmail placeholder=E-Mail />
+			<button class=blue id=fgSendButton>zurücksetzen</button>
+		</form>
+	</main>
+</section>
+
+<section class="view" id=view_changePassword>
+	<header>
+		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<p>
+			Maschinendeck Trier e.V.
+		</p>
+		<h1>Türsystem</h1>
+	</header>
+	<main>
+		<p>
+			<a href="/">&laquo; zurück</a> 
+			<span style="float:right;">
+				Passwort ändern
+			</span>
+		</p>
+		<form id="changePasswordForm" method="POST">
+			<input type=password name=chPassword id=chPassword placeholder=Passwort />
+			<input type=password name=chPasswordConfirm id=chPasswordConfirm placeholder="Passwort widerholen" />
+			<button class=blue id=chSendButton>Passwort ändern</button>
+		</form>
 	</main>
 </section>
 
