@@ -3,13 +3,17 @@ const {DataTypes, Model} = require("sequelize");
 const Db                 = require("../Database");
 
 class User extends Model {
-	static GenerateSalt = () => {
+	static GenerateSalt() {
 		const salt = crypto.randomUUID();
 
 		return crypto.createHash("md5").update(salt).digest("hex").substr(0, 12);
 	}
 
-	static GeneratePassword = () => {
+	static GenerateResetKey() {
+		return crypto.createHash("md5").update(crypto.randomUUID()).digest("hex");
+	}
+
+	static GeneratePassword() {
 		return Math.random().toString(36).slice(-8);
 	}
 
@@ -79,6 +83,11 @@ User.init({
 		type      : DataTypes.STRING,
 		allowNull : false,
 		defaultValue : "guest"
+	},
+	password_reset: {
+		type         : DataTypes.STRING(32),
+		allowNull    : true,
+		defaultValue : null
 	}
 }, {
 	sequelize : Db

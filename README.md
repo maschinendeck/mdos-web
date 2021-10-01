@@ -63,9 +63,15 @@ SERIALPORT
 BAUDRATE
 
 /*
+ * Domain of this application
+ *
+ * @default null
+ */
+DOMAIN
+/*
  * Mailserver to use for "change password" functionality
  *
- * @default maschinendeck.org
+ * @default hamal.uberspace.de
  * @optional
  */
 MAIL_SERVER
@@ -88,7 +94,7 @@ MAIL_PASSWORD
 /*
  * SMTP port on mail server
  * 
- * @default 993
+ * @default 587
  * @optional
  */
 MAIL_PORT

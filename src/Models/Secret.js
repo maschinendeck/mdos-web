@@ -4,7 +4,7 @@ class Secret extends String {
 	constructor() {
 		super();
 		const appendix = crypto.randomUUID();
-		this.value = `${process.env.SECRET}.${appendix}`
+		this.value = `${process.env.SECRET}`;//``.${appendix}`
 	}
 
 	toString() {

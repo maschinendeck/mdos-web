@@ -9,9 +9,11 @@ const {Log, LogLevel}   = require("./Std");
 const Serial            = require("./Serial");
 const {ErrorMiddleware} = Response;
 
-const Auth    = require("./routes/Auth");
-const Door    = require("./routes/Door");
-const Restart = require("./routes/Restart");
+const Auth          = require("./routes/Auth");
+const Door          = require("./routes/Door");
+const Restart       = require("./routes/Restart");
+const Password      = require("./routes/Password");
+const PasswordReset = require("./routes/PasswordReset");
 
 class MDoSNotReadyError extends Response {
 	constructor(path) {
@@ -31,14 +33,15 @@ class MDoS {
 
 	attachRoutes() {
 		const doorHandler = Door(this.serial);
-		this.router.post("/auth",        Auth);
-		this.router.all("/door/:action", doorHandler);
-		this.router.get("/restart",      Restart(this.serial));
+		this.router.post("/auth",           Auth);
+		this.router.post("/password/:key",  PasswordReset);
+		this.router.all("/door/:action",    doorHandler);
+		this.router.get("/restart",         Restart(this.serial));
+		this.router.get("/password/:email", Password);
 	}
 
 	attachMiddlewares() {
 		this.app.use(BodyParser.json());
-		this.app.use(Express.static(`${__dirname}/../public`));
 		this.app.use("/api", JWT({
 			secret : Secret, // invalidates tokens on server restart
 			algorithms : [
@@ -46,7 +49,9 @@ class MDoS {
 			]
 		}).unless({
 			path : [
-				"/api/auth"
+				"/api/auth",
+				"/api/password",
+				"/password"
 			]
 		}));
 		// activate when ready state is working correctly
@@ -58,7 +63,12 @@ class MDoS {
 			response.json(new MDoSNotReadyError(request.path));
 		});
 		this.app.use("/api", this.router);
+		this.app.use("/password", (request, response, next) => {
+			console.log("pw");
+			response.sendFile(`${__dirname}/../public/index.html`);
+		});
 		this.app.use(ErrorMiddleware);
+		this.app.use(Express.static(`${__dirname}/../public`));
 	}
 
 	listen() {
