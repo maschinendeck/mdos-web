@@ -42,8 +42,9 @@ const Auth = async (request, response) => {
 
 	const hours = Time.HOURS * (process.env.TOKEN_HOURS || 12);
 	const jwt   = await JWT.sign({
-		email : user.email,
-		role  : user.role
+		email    : user.email,
+		nickname : user.nickname,
+		role     : user.role
 	}, Secret, {
 		expiresIn : (Time.HOURS * hours) / 1000
 	});
