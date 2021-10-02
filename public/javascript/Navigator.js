@@ -60,6 +60,13 @@ class Navigator {
 		this.processAnchor();
 	}
 
+	login() {
+		const anchor = Navigator.Anchor();
+
+		if (!anchor)
+			this.changeView(this.views.menu);
+	}
+
 	processAnchor() {
 		const anchor = Navigator.Anchor();
 
