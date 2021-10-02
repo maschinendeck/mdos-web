@@ -11,8 +11,10 @@ class MQTT {
 				password : process.env.MQTT_PASSWORD
 			});
 		
-		this.client.on("error", error => console.log(error.message));
-		this.client.on("connect", () => this.connected = true);
+		if (this.client) {
+			this.client.on("error", error => console.log(error.message));
+			this.client.on("connect", () => this.connected = true);
+		}
 	}
 
 	publish(message) {
