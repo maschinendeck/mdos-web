@@ -1,5 +1,7 @@
 const Chalk = require("chalk");
 
+const MQTT  = require("./MQTT");
+
 /**
  * Provides a standard library for often used functions
  *
@@ -44,6 +46,7 @@ class Std {
 				};
 				break;
 		}
+		MQTT.publish(message);
 		console.log(render(`${date.toDateString()} ${date.toLocaleTimeString()}\t${message}`));
 
 		if (level === Std.LogLevel.PANIC)

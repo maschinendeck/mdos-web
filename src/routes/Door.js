@@ -105,6 +105,7 @@ const Door = serial => {
 								return;
 							correct = true;
 							Log(`User '${user.email}' submitted correct code '${code}'`, LogLevel.INFO);
+							Log(`#PUB 200 ${user.nickname}`, LogLevel.INFO);
 							Log("Opening door now", LogLevel.WARN);
 							break;
 						case 400:
