@@ -60,7 +60,7 @@ class Navigator {
 		this.processAnchor();
 	}
 
-	processAnchor(anchor) {
+	processAnchor() {
 		const anchor = Navigator.Anchor();
 
 		if (!anchor || anchor === "")
