@@ -85,6 +85,7 @@ class Keypad {
 				case 200:
 					new Alert(Alert.Type.Success, "Der Code war korrekt. Die Tür wird geöffnet.");
 					this.clearDisplay();
+					this.navigator.changeView(this.navigator.views.menu);
 					break;
 				case 405:
 					new Alert(Alert.Type.ERROR, `Dir fehlt die Berechtigung diese Aktion durchzuführen`);

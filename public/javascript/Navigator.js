@@ -43,8 +43,6 @@ class Navigator {
 			this.changeView(this.views.keypad);
 		});
 
-		this.changeView(this.views.login);
-
 		this.buttons.close.on("click", () => {
 			this.closeDoor();
 		});
@@ -59,12 +57,12 @@ class Navigator {
 			this.processAnchor(hash);
 		}
 
-		const anchor = Navigator.Anchor();
-		if (anchor)
-			this.processAnchor(anchor);
+		this.processAnchor();
 	}
 
 	processAnchor(anchor) {
+		const anchor = Navigator.Anchor();
+
 		if (!anchor || anchor === "")
 			return;
 
@@ -76,6 +74,7 @@ class Navigator {
 				this.changeView(this.views.changePassword);
 				break;
 			default:
+				this.changeView(this.views.login);
 				return;
 		}
 	}
