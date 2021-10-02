@@ -63,9 +63,6 @@ class Navigator {
 	processAnchor() {
 		const anchor = Navigator.Anchor();
 
-		if (!anchor || anchor === "")
-			return;
-
 		switch(anchor) {
 			case "#forgotPassword":
 				this.changeView(this.views.forgotPassword);
