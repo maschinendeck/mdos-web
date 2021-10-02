@@ -16,6 +16,7 @@ const mainREPL = async () => {
 			name    : "action",
 			message : "Which action do you like to perform? (CRUD)",
 			choices : [
+				"list",
 				"create",
 				"read",
 				"update",
@@ -29,6 +30,9 @@ const mainREPL = async () => {
 		switch (action) {
 			case "quit":
 				process.exit();
+			case "list":
+				listUsers();
+				break;
 			case "create":
 				createUser();
 				break;
@@ -47,6 +51,25 @@ const mainREPL = async () => {
 		}
 	});
 };
+
+const listUsers = async () => {
+	const users     = await User.findAll();
+	const maxLength = 13;
+
+	console.table(users.map(user => {
+		const data = user.dataValues;
+
+		// shortening strings
+		for (const [key, value] of Object.entries(data))
+			data[key] = value?.length > maxLength ? value.substr(0, maxLength - 1) + "..." : value;
+		delete data.password;
+		delete data.salt;
+		
+		return data;
+	}).reduce((accumulator, element) => {const id = element.id; delete element.id; accumulator[id] = element; return accumulator}, {}));
+
+	mainREPL();
+}
 
 const findAndSelectUser = async (question = "Which user should be selected?") => {
 	const {searchString} = await inquirer.prompt([
