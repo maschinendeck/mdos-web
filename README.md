@@ -26,14 +26,14 @@ Copy `.env.sample` to `.env` and fill in the desired values. Then just run `npm 
 
 ## Enrvironment variables
 ```javascript
-/*
+/**
  * JWT secret
  *
  * @default null
  */
 SECRET
 
-/*
+/**
  * Number of hours a JWT is valid
  *
  * @default 12
@@ -41,7 +41,7 @@ SECRET
  */
 TOKEN_HOURS
 
-/*
+/**
  * Port for the webserver to listen on
  *
  * @default 9000
@@ -49,26 +49,27 @@ TOKEN_HOURS
  */
 PORT
 
-/*
+/**
  * Port for serial communication (/dev/ttyserial.something)
  * @default ""
  */
 SERIALPORT
 
-/*
+/**
  * Baudrate for Serial connection with MDoS
  *
  * @default 9600
  */
 BAUDRATE
 
-/*
+/**
  * Domain of this application
  *
  * @default null
  */
 DOMAIN
-/*
+
+/**
  * Mailserver to use for "change password" functionality
  *
  * @default hamal.uberspace.de
@@ -76,7 +77,7 @@ DOMAIN
  */
 MAIL_SERVER
 
-/*
+/**
  * User for access to mailserver
  *
  * @default noreply@tuer.maschinendeck.org
@@ -84,18 +85,49 @@ MAIL_SERVER
  */
 MAIL_USER
 
-/*
+/**
  * Password for SMTP user
  *
  * @default null
  */
 MAIL_PASSWORD
 
-/*
+/**
  * SMTP port on mail server
  * 
  * @default 587
  * @optional
  */
 MAIL_PORT
+
+/**
+ * MQTT server to publish to (leave empty to disable)
+ * 
+ * @default bridge.local
+ * @optional
+ */
+MQTT_SERVER
+
+/**
+ * User for authentication on the MQTT server
+ * 
+ * @default bridge
+ * @optional 
+ */
+MQTT_USER
+
+/**
+ * Password for authentication on the MQTT server
+ * 
+ * @optional 
+ */
+MQTT_PASSWORD
+
+/**
+ * MQTT topic to publish to
+ * 
+ * @default maschinendeck/security/door
+ * @optional
+ */
+MQTT_TOPIC
 ```
