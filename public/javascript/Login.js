@@ -7,19 +7,13 @@ const Login = (navigator, jwt, setJWT) => {
 	const usernameContainer = $("#username");
 	const passwordContainer = $("#password");
 	const form              = $("#loginForm");
-	const button            = $("#loginButton");
-
-	let loggingIn = false;
 
 	if (jwt) {
 		APICall.JWT = jwt;
-		navigator.changeView(navigator.views.menu);
+		navigator.login();
 	}
 
 	const login = () => {
-		if (loggingIn)
-			return;
-		loggingIn      = true;
 		const username = usernameContainer.val();
 		const password = passwordContainer.val();
 
