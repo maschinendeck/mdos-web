@@ -11,7 +11,7 @@
     "build:js": "webpack --config webpack.config.js",
     "watch:css": "node-sass public/css/mdos.scss -wo public/css/",
     "watch:js": "webpack --config webpack.config.js --watch",
-    "install": "npm run build && pm2 start main.js --name mdos && pm2 save",
+    "install": "npm run build && export NODE_ENV=production && pm2 start main.js --log /var/log/mdos-web/production --name mdos && pm2 save",
     "remove": "pm2 stop mdos && pm2 delete mdos && pm2 save",
     "usermanager": "node bin/usermanager.js"
   },
