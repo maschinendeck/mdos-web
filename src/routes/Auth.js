@@ -27,6 +27,7 @@ const Auth = async (request, response) => {
 	});
 
 	if (users.length !== 1) {
+		Log(`Unknown user '${username}' has tried to log in`, LogLevel.ERROR);
 		response.json(new AuthenticationError());
 		return;
 	}
