@@ -1,6 +1,7 @@
 import {$}     from "./Q6.js";
 import APICall from "./APICall.js";
 import Alert   from "./Alert.js";
+import {Visit} from "./Router.js";
 
 class Password {
 	constructor() {
@@ -27,6 +28,7 @@ class Password {
 					mit den Instruktionen zum Zurücksetzen deines Passworts gesendet.
 				`);
 				this.input.val("");
+				Visit("/login");
 			}
 		}).catch(error => {
 			new Alert(Alert.Type.ERROR, `Es ist ein Fehler aufgetreten: ${error.message}`);
