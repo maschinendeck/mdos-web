@@ -190,6 +190,7 @@ const updateUser = async () => {
 		}
 		user.save();
 		console.log(answers);
+		mainREPL();
 	});
 }
 
