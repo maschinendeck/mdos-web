@@ -5,9 +5,10 @@ const {Router}   = Express;
 
 const Secret            = require("./Models/Secret");
 const Response          = require("./Response");
-const {Log, LogLevel}   = require("./Std");
+const Std               = require("./Std");
 const Serial            = require("./Serial");
 const {ErrorMiddleware} = Response;
+const {Log, LogLevel}   = Std;
 
 const Auth          = require("./routes/Auth");
 const Door          = require("./routes/Door");
@@ -55,13 +56,15 @@ class MDoS {
 			]
 		}));
 		// activate when ready state is working correctly
-		/*this.app.use("/api", (request, response, next) => {
-			if (this.serial.ready()) {
-				next();
-				return;
-			}
-			response.json(new MDoSNotReadyError(request.path));
-		});*/
+		if (!Std.IsDevelopment()) {
+			this.app.use("/api", (request, response, next) => {
+				if (this.serial.ready()) {
+					next();
+					return;
+				}
+				response.json(new MDoSNotReadyError(request.path));
+			});
+		}
 		this.app.use("/api", this.router);
 		this.app.use(ErrorMiddleware);
 
