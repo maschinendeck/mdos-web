@@ -10,13 +10,15 @@ class InvalidEmailError extends Response {
 }
 
 const Password = async (request, response) => {
-	const {email} = request.params;
+	let   {email} = request.params;
 	const mailer  = new Mailer();
 
 	if (!email || email == "") {
 		response.json(InvalidEmailError());
 		return;
 	}
+
+	email = email.toLowerCase();
 
 	const user = await User.findOne({
 		where : {

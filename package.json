@@ -1,6 +1,6 @@
 {
   "name": "mdos-web",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The frontend of MDoS exposed to the world - includes user, rights and access management",
   "main": "main.js",
   "scripts": {
