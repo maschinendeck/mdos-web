@@ -8,7 +8,10 @@ import Login         from "./Login.js";
 import Password      from "./Password.js";
 import PasswordReset from "./PasswordReset.js";
 
+import {version} from "../../package.json";
+
 $(document).ready(() => {
+	$(".version").html(`Version ${version}`);
 	const [jwt, setJWT] = useLocalStorage("jwt", null);
 
 	const router    = new Router();
