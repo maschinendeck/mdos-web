@@ -2,23 +2,23 @@
 <html>
 <head>
 	<title>MDoS</title>
-	<link rel=stylesheet type=text/css href=css/mdos.css />
+	<link rel=stylesheet type=text/css href=/css/mdos.css />
 	<meta name=viewport content="width=device-width, initial-scale=1.0, user-scalable=no" />
 	<meta name="apple-mobile-web-app-title" content="MDoS" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<link rel="apple-touch-icon" sizes="120x120" href="assets/appIcon@120.png" />
-	<link rel="apple-touch-icon" sizes="152x152" href="assets/appIcon@152.png" />
-	<link rel="apple-touch-icon" sizes="167x167" href="assets/appIcon@167.png" />
-	<link rel="apple-touch-icon" sizes="180x180" href="assets/appIcon@180.png" />
-	<link rel="apple-touch-icon" sizes="1024x1024" href="assets/appIcon@1024.png" />
-	<script type=module src=javascript/mdos.min.js></script>
+	<link rel="apple-touch-icon" sizes="120x120" href="/assets/appIcon@120.png" />
+	<link rel="apple-touch-icon" sizes="152x152" href="/assets/appIcon@152.png" />
+	<link rel="apple-touch-icon" sizes="167x167" href="/assets/appIcon@167.png" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/assets/appIcon@180.png" />
+	<link rel="apple-touch-icon" sizes="1024x1024" href="/assets/appIcon@1024.png" />
+	<script type=module src=/javascript/mdos.min.js></script>
 </head>
 <body>
 
-<section class="view" id=view_login>
+<section class="view" data-view=login id=view_login data-default="1">
 	<header>
-		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<img src=/assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
 		<p>
 			Maschinendeck Trier e.V.
 		</p>
@@ -27,19 +27,25 @@
 	<main id=login>
 		<form id="loginForm" method="POST">
 			<input type=text name=username id=username placeholder=E-Mail />
-			<input type=password name=password id=password placeholder=Password />
+			<input type=password name=password id=password placeholder=Password autocomplete="off" />
 			<button class=blue id=loginButton>Login</button>
-			<a href="#forgotPassword">Passwort vergessen?</a>
+			<a href="/forgotPassword">Passwort vergessen?</a>
 		</form>
 	</main>
 </section>
-<section class="view" id=view_menu>
+<section class="view" data-view=menu id=view_menu>
 	<header>
-		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<img src=/assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
 		<p>
 			Maschinendeck Trier e.V.
 		</p>
-		<h1>Türsystem</h1>
+		<h1>
+			Türsystem
+			<svg id="logoutButton" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+				<path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+			<path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+			</svg>
+		</h1>
 	</header>
 	<main>
 		<button id=open class=green>öffnen</button>
@@ -48,7 +54,7 @@
 	</main>
 </section>
 
-<section class="view" id=view_keypad style="z-index: 250;">
+<section class="view" data-view="keypad" id=view_keypad style="z-index: 250;">
 	<header>
 		<input type=text name=pin id=display maxlength="4" value="" pattern="[0-9]{4}" readonly/>
 	</header>
@@ -74,9 +80,9 @@
 	</main>
 </section>
 
-<section class="view" id=view_forgotPassword>
+<section class="view" data-view=forgotPassword id=view_forgotPassword>
 	<header>
-		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<img src=/assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
 		<p>
 			Maschinendeck Trier e.V.
 		</p>
@@ -96,9 +102,9 @@
 	</main>
 </section>
 
-<section class="view" id=view_changePassword>
+<section class="view" data-view=changePassword id=view_changePassword>
 	<header>
-		<img src=assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
+		<img src=/assets/logo_maschinendeck.svg alt="Logo des Maschinendeck Trier e.V." />
 		<p>
 			Maschinendeck Trier e.V.
 		</p>
@@ -112,11 +118,14 @@
 			</span>
 		</p>
 		<form id="changePasswordForm" method="POST">
-			<input type=password name=chPassword id=chPassword placeholder=Passwort />
-			<input type=password name=chPasswordConfirm id=chPasswordConfirm placeholder="Passwort widerholen" />
+			<input type=password name=chPassword id=chPassword placeholder=Passwort autocomplete="off" />
+			<input type=password name=chPasswordConfirm id=chPasswordConfirm placeholder="Passwort widerholen" autocomplete="off" />
 			<button class=blue id=chSendButton>Passwort ändern</button>
 		</form>
 	</main>
+</section>
+<section class=view data-view=notfound>
+	<h2>404 Seite nicht gefunden</h2>
 </section>
 
 <footer>

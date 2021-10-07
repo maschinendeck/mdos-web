@@ -68,14 +68,14 @@ class Q6 {
 		return this;
 	}
 
-	css(key, value = null) {
+	/*css(key, value = null) {
 		if (value === null)
 			return this._elements.style[Q6.TranslateCSSKey(key)];
 
 		this._each(element => {
 			element.style[Q6.TranslateCSSKey(key)] = value;
 		});
-	}
+	}*/
 
 	each(callback) {
 		for (let element of this._elements)
@@ -84,9 +84,9 @@ class Q6 {
 		return this;
 	}
 
-	find(selector) {
+	/*find(selector) {
 		return new Q6(selector, this._elements[0]);
-	}
+	}*/
 
 	get(index = 0) {
 		return this._elements[index];
@@ -106,7 +106,7 @@ class Q6 {
 		return this;
 	}
 
-	length() {
+	/*length() {
 		return this._elements.length;
 	}
 
@@ -118,7 +118,7 @@ class Q6 {
 		});
 
 		return this;
-	}
+	}*/
 
 	on(eventName, callback) {
 		this._each(element => {
@@ -130,13 +130,13 @@ class Q6 {
 		return this;
 	}
 
-	prepend(newElement) {
+	/*prepend(newElement) {
 		this._each(element => {
 			element.parentNode.insertBefore(newElement, element);
 		});
 
 		return this;
-	}
+	}*/
 
 	remove() {
 		this._each(element => element.remove());
@@ -161,13 +161,13 @@ class Q6 {
 		return this.on("DOMContentLoaded", callback);
 	}
 
-	toggleClass(className) {
+	/*toggleClass(className) {
 		this._each(element => {
 			element.classList.toggle(className);
 		});
 
 		return this;
-	}
+	}*/
 
 	val(value = null) {
 		if (value === null)
@@ -190,7 +190,7 @@ class Q6 {
 		return element.content.firstChild;
 	}
 
-	static TranslateCSSKey(key) {
+	/*static TranslateCSSKey(key) {
 		if (key.indexOf('-') < 0)
 			return key;
 		key = key.split('-');
@@ -205,7 +205,7 @@ class Q6 {
 		});
 		request.open("GET", url);
 		request.send();
-	}
+	}*/
 }
 
 const $ = Q6.$;

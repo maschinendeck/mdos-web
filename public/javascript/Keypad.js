@@ -1,6 +1,7 @@
 import {$}     from "./Q6.js";
 import APICall from "./APICall.js";
 import Alert   from "./Alert.js";
+import {Visit} from "./Router.js";
 class Keypad {
 	constructor(navigator) {
 		this.navigator = navigator;
@@ -85,7 +86,8 @@ class Keypad {
 				case 200:
 					new Alert(Alert.Type.Success, "Der Code war korrekt. Die Tür wird geöffnet.");
 					this.clearDisplay();
-					this.navigator.changeView(this.navigator.views.menu);
+					//this.navigator.changeView(this.navigator.views.menu);
+					Visit("/menu");
 					break;
 				case 405:
 					new Alert(Alert.Type.ERROR, `Dir fehlt die Berechtigung diese Aktion durchzuführen`);
@@ -94,7 +96,8 @@ class Keypad {
 				case 508:
 					new Alert(Alert.Type.ERROR, "Der angegebene Code war inkorrekt.");
 					this.clearDisplay();
-					this.navigator.changeView(this.navigator.views.menu);
+					//this.navigator.changeView(this.navigator.views.menu);
+					Visit("/menu");
 					return;
 				default:
 					new Alert(Alert.Type.ERROR, `Etwas ist schiefgelaufen [Code ${response.code}]`);
