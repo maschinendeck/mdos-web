@@ -1,10 +1,12 @@
-import {$} from "./Q6.js";
+import {$}                   from "./Q6.js";
+import {isAppleMobileDevice} from "./Util.js";
 
 class Router {
 	constructor() {
-		this.start = null;
-		this.views = {};
-		this.path  = Router.Path(window.location.pathname);
+		this.start  = null;
+		this.views  = {};
+		this.path   = Router.Path(window.location.pathname);
+		this.length = this.path.length;
 
 		$(".view").each(element => {
 			if(element.data("default"))

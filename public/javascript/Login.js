@@ -18,9 +18,9 @@ const Login = (router, jwt, setJWT) => {
 
 	if (jwt) {
 		APICall.JWT = jwt;
-		if (router.path.length < 1) {
+		if (router.length < 1) {
 			Visit("/menu");
-			console.log("loggedin");
+			console.log("loggedin", router.path);
 		}
 	}
 
