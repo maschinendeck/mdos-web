@@ -27,7 +27,7 @@ class Response {
 				message = "Authentication token invalid or missing";
 				break;
 			default:
-				code    = error.code;
+				code    = error.status;
 				message = error.message;
 				break;
 		}

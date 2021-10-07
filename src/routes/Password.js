@@ -38,7 +38,7 @@ const Password = async (request, response) => {
 				Passwortreset angefordert wurde.
 			</p>
 			<p>
-				Um dein Passwort zu ändern, folge diesem <a href="https://${process.env.DOMAIN || ""}/?key=${key}#changePassword">Link</a>
+				Um dein Passwort zu ändern, folge diesem <a href="https://${process.env.DOMAIN || ""}/changePassword?key=${key}">Link</a>
 			</p>
 			<p>
 				Falls du diesen Reset nicht angefordert hast, kannst du diese E-Mail einfach ignorieren.

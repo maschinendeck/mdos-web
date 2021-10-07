@@ -185,11 +185,14 @@ const updateUser = async () => {
 				user.password = User.HashPassword(value, user.salt);				
 				continue;
 			}
-
-			user[key] = value;
+			if (key === "email")
+				user[key] = value.toLowerCase();
+			else
+				user[key] = value;
 		}
 		user.save();
 		console.log(answers);
+		mainREPL();
 	});
 }
 
@@ -279,10 +282,10 @@ Passwort    : ${initialPassword}
 		const newUser         = User.build({
 			firstname,
 			lastname,
-			email,
+			email     : email.toLowerCase(),
 			nickname,
-			salt     : salt,
-			password : User.HashPassword(initialPassword, salt),
+			salt      : salt,
+			password  : User.HashPassword(initialPassword, salt),
 			role
 		});
 		

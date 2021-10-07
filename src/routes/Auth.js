@@ -14,6 +14,7 @@ class AuthenticationError extends Response {
 
 const Auth = async (request, response) => {
 	const {username, password} = request.body;
+	const email = username.toLowerCase();
 
 	if (!username || !password) {
 		response.json(new AuthenticationError());
@@ -22,11 +23,12 @@ const Auth = async (request, response) => {
 
 	const users = await User.findAll({
 		where : {
-			email : username
+			email
 		}
 	});
 
 	if (users.length !== 1) {
+		Log(`Unknown user '${username}' has tried to log in`, LogLevel.ERROR);
 		response.json(new AuthenticationError());
 		return;
 	}

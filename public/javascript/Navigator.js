@@ -1,6 +1,7 @@
 import {$}     from "./Q6.js";
 import APICall from "./APICall.js";
 import Alert   from "./Alert.js";
+import {Visit} from "./Router.js";
 
 class Navigator {
 	constructor(jwt, setJWT) {
@@ -12,16 +13,8 @@ class Navigator {
 			restart : $("#restart"),
 			abort   : $("#abort")
 		};
-		this.views = {
-			login          : $("#view_login"),
-			menu           : $("#view_menu"),
-			keypad         : $("#view_keypad"),
-			forgotPassword : $("#view_forgotPassword"),
-			changePassword : $("#view_changePassword")
-		};
-
 		this.buttons.abort.on("click", () => {
-			this.changeView(this.views.menu);
+			Visit("/menu");
 		});
 		this.buttons.open.on("click", () => {
 			APICall.get("/door/request").then(response => {
@@ -29,18 +22,19 @@ class Navigator {
 					case 200:
 						break;
 					case 401:
-						this.changeView(this.views.login);
+						Visit("/login");
 						break;
 					case 430:
 						new Alert(Alert.Type.ERROR, "Timeout während des Vorgangs");
-						this.changeView(this.views.menu);
+						Visit("/menu");
 						break;
 					default:
 						new Alert(Alert.Type.ERROR, `Fehler beim Anfordern des Türcodes: ${response.message} [${response.code}]`);
+						Visit("/menu");
 						break;
 				}
 			});
-			this.changeView(this.views.keypad);
+			Visit("/keypad");
 		});
 
 		this.buttons.close.on("click", () => {
@@ -50,37 +44,6 @@ class Navigator {
 		this.buttons.restart.on("click", () => {
 			this.restartSystem();
 		});
-
-		window.onpopstate = event => {
-			const {hash} = event.currentTarget.location;
-
-			this.processAnchor(hash);
-		}
-
-		this.processAnchor();
-	}
-
-	login() {
-		const anchor = Navigator.Anchor();
-
-		if (!anchor)
-			this.changeView(this.views.menu);
-	}
-
-	processAnchor() {
-		const anchor = Navigator.Anchor();
-
-		switch(anchor) {
-			case "#forgotPassword":
-				this.changeView(this.views.forgotPassword);
-				break;
-			case "#changePassword":
-				this.changeView(this.views.changePassword);
-				break;
-			default:
-				this.changeView(this.views.login);
-				return;
-		}
 	}
 
 	closeDoor() {
@@ -126,25 +89,10 @@ class Navigator {
 		});
 	}
 
-	changeView(toView) {
-		for (const view of Object.values(this.views)) {
-			if (view !== toView)
-				view.removeClass("active");
-		}
-
-		toView.addClass("active");
-	}
-
 	deauthorize() {
 		this.setJWT(null);
 		APICall.JWT = null;
-		this.changeView(this.views.login);
-	}
-
-	static Anchor() {
-		const anchor = document.URL.split("#");
-
-		return anchor.length > 1 ? `#${anchor[anchor.length - 1]}` : null;
+		Visit("/login");
 	}
 }
 

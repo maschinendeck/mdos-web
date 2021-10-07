@@ -1,16 +1,16 @@
-import {$}     from "./Q6.js";
-import APICall from "./APICall.js";
-import Alert   from "./Alert.js";
+import {$}             from "./Q6.js";
+import APICall         from "./APICall.js";
+import Alert           from "./Alert.js";
+import {Params, Visit} from "./Router.js";
 
 class PasswordReset {
-	constructor(navigator) {
-		this.navigator    = navigator;
+	constructor() {
 		this.input        = $("#chPassword");
 		this.inputConfirm = $("#chPasswordConfirm");
 		this.form         = $("#changePasswordForm");
 		this.button       = $("#chSendButton");
 	
-		const {key} = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+		const {key} = Params;
 		this.key    = typeof key === "undefined" ? null : key;
 
 		this.form.on("submit", (_, event) => this.send(event));
@@ -43,7 +43,7 @@ class PasswordReset {
 		}).then(response => {
 			if (response.code === 200) {
 				new Alert(Alert.Type.SUCCESS, "Dein Passwort wurde erfolgreich geändert.");
-				this.navigator.changeView(this.navigator.views.login);
+				Visit("/login");
 			} else
 				new Alert(Alert.Type.ERROR, `Fehler beim Ändern des Passworts: ${response.message}`);
 		}).catch(error => {
