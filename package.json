@@ -7,9 +7,9 @@
     "start": "export NODE_ENV=production && node .",
     "dev": "nodemon . & npm run watch:css & npm run watch:js",
     "build": "npm run build:css && npm run build:js",
-    "build:css": "node-sass public/css/mdos.scss public/css/mdos.css",
+    "build:css": "sass public/css/mdos.scss public/css/mdos.css",
     "build:js": "webpack --config webpack.config.js",
-    "watch:css": "node-sass public/css/mdos.scss -wo public/css/",
+    "watch:css": "sass --watch public/css",
     "watch:js": "webpack --config webpack.config.js --watch",
     "install": "npm run build && export NODE_ENV=production && pm2 start main.js --log /var/log/mdos-web/production --name mdos && pm2 save",
     "remove": "pm2 stop mdos && pm2 delete mdos && pm2 save",
@@ -36,8 +36,8 @@
   },
   "devDependencies": {
     "inquirer": "^8.1.5",
-    "node-sass": "^6.0.1",
     "nodemon": "^2.0.12",
+    "sass": "^1.49.8",
     "webpack": "^5.54.0",
     "webpack-cli": "^4.8.0"
   }
