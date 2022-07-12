@@ -11,7 +11,12 @@ class Serial {
 		this.callbacks_ = [];
 
 		this.port = new SerialPort(process.env.SERIALPORT || "", {
-			baudRate : parseInt(process.env.BAUDRATE) || 9600
+			baudRate : parseInt(process.env.BAUDRATE) || 9600,
+			autoOpen : false
+		});
+		this.port.open(error => {
+			if (error)
+				Log(`[ERROR] SerialPort open failed: ${error.message.replace("Error:", "")}`, LogLevel.ERROR);
 		});
 		this.pipe = this.port.pipe(parser);
 
