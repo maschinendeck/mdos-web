@@ -43,7 +43,7 @@ User.init({
 		allowNull : false,
 		validate  : {
 			is : {
-				args : /^[A-Z][a-zA-Z]+$/,
+				args : /^\p{Lu}\p{L}+$/u,
 				msg  : "First name has to start with an uppercase letter and can not be empty." 
 			}
 		}
@@ -53,7 +53,7 @@ User.init({
 		allowNull : false,
 		validate  : {
 			is : {
-				args : /^[A-Z][a-zA-Z]+$/,
+				args : /^\p{Lu}\p{L}+$/u,
 				msg  : "Last name has to start with an uppercase letter and can not be empty." 
 			}
 		}
@@ -90,7 +90,8 @@ User.init({
 		defaultValue : null
 	}
 }, {
-	sequelize : Db
+	sequelize : Db,
+	charset   : "utf8"
 });
 
 module.exports = User;

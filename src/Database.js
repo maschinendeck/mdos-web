@@ -4,6 +4,7 @@ class Database {
 	constructor() {
 		this.connection = new Sequelize({
 			dialect : "sqlite",
+			charset : "utf8",
 			storage : `${__dirname}/../database.sqlite`,
 			logging : false
 		});
