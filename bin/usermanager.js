@@ -1,13 +1,18 @@
 require("dotenv").config();
 
-const {Op}     = require("sequelize");
-const inquirer = require("inquirer");
+const {Op}       = require("sequelize");
+const inquirer   = require("inquirer");
+const {DateTime} = require("luxon");
 
 const {Log, LogLevel} = require("../src/Std");
 const User            = require("../src/Models/User");
 const Mailer          = require("../src/Mailer");
 
 const mailer = new Mailer();
+
+const formatDate = sqliteString => {
+	return DateTime.fromJSDate(sqliteString).toFormat("dd.LL.yyyy hh:mm");
+};
 
 const mainREPL = async () => {
 	return await inquirer.prompt([
@@ -62,6 +67,8 @@ const listUsers = async () => {
 		// shortening strings
 		for (const [key, value] of Object.entries(data))
 			data[key] = value?.length > maxLength ? value.substr(0, maxLength - 1) + "..." : value;
+		data.updatedAt = formatDate(data.updatedAt);
+		data.createdAt = formatDate(data.createdAt);
 		delete data.password;
 		delete data.salt;
 		
@@ -122,20 +129,19 @@ const findAndSelectUser = async (question = "Which user should be selected?") =>
 }
 
 const readUser = async () => {
-	const userId = await findAndSelectUser();
+	const id = await findAndSelectUser();
 
-	if (userId === "back") {
+	if (id === "back") {
 		mainREPL();
 		return;
 	}
 
-	const result = await User.findAll({
+	const user = await User.findOne({
 		where : {
-			id : userId
+			id
 		}
 	});
-	const user = result[0];
-
+	
 	console.table(user?.dataValues);
 
 	mainREPL();
@@ -149,12 +155,11 @@ const updateUser = async () => {
 		return;
 	}
 
-	const result = await User.findAll({
+	const user = await User.findOne({
 		where : {
 			id : userId
 		}
 	});
-	const user = result[0];
 
 	const options = [];
 
